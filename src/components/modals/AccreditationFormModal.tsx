@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -6,10 +7,20 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../ui/dialog";
+import { MembersType } from "../../types/accreditation";
 
-import { FaChevronCircleRight } from "../../hooks/icons";
+interface AddMemsProps{
+    handleAddMember: (data:MembersType)=> void;
+}
 
-export function AddMembers() {
+export const AddMembers: React.FC<AddMemsProps> = ({handleAddMember})=> {
+    const [data, setData] = useState<MembersType>({
+        name:"",
+        position:"",
+        contactNumber:"",
+        studentNumber:""
+    })
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -25,39 +36,54 @@ export function AddMembers() {
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" name="name" placeholder="Name" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" name="position" placeholder="Position" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" name="contact" placeholder="Contact Number" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" name="studentNumber" placeholder="Student Number" required/>
-                    {/* <div>
-                        <label htmlFor="name">
-                            Name
-                        </label>
-                        <input type="text" name="name" placeholder="Name"/>
-                    </div> */}
-                    {/* <div>
-                        <label htmlFor="position">
-                            Position
-                        </label>
-                        <input type="text" name="position" placeholder="Position"/>
-                    </div> */}
-                    {/* <div>
-                        <label htmlFor="contact">
-                            Contact Number
-                        </label>
-                        <input type="text" name="contact" placeholder="Contact Number"/>
-                    </div> */}
-                    {/* <div>
-                        <label htmlFor="studentNumber">
-                            Student Number
-                        </label>
-                        <input type="text" name="studentNumber" placeholder="Student Number"/>
-                    </div> */}
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        name="name" 
+                        value={data.name}
+                        onChange={(e)=>{setData({...data, name:e.target.value})}}
+                        placeholder="Name" 
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        name="position" 
+                        value={data.position}
+                        onChange={(e)=>{setData({...data, position:e.target.value})}}
+                        placeholder="Position" 
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        name="contact" 
+                        value={data.contactNumber}
+                        onChange={(e)=>{setData({...data, contactNumber:e.target.value})}}
+                        placeholder="Contact Number" 
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        name="studentNumber" 
+                        value={data.studentNumber}
+                        onChange={(e)=>{setData({...data, studentNumber:e.target.value})}}
+                        placeholder="Student Number" 
+                        required
+                    />
                 </form>
                 <DialogFooter>
-                    <button type="submit" className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md">
-                        Submit
-                    </button>
+                    <DialogTrigger asChild>
+                        <button 
+                            type="submit" 
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
+                            onClick={()=>{handleAddMember(data)}}
+                            disabled={!data.name || !data.position || !data.contactNumber || !data.studentNumber}
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

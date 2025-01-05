@@ -20,24 +20,14 @@ import {
 } from "../../hooks/icons";
 import { useState } from "react";
 import { AddActivity, AddMembers } from "../modals/AccreditationFormModal";
+import { ActivityType, MembersType } from "../../types/accreditation";
 
 interface AccreditationType{
   constitutionsAndByLaws:string;
   organizationName:string;
   type:string;
-  members:Array<{
-    name:string;
-    position:string;
-    contactNumber:string;
-    studentNumber:string;
-  }>;
-  planActivities:Array<{
-    activity:string;
-    learningOutcome:string;
-    targetTime:string;
-    targetGroup:string;
-    personsInvolved:string;
-  }>;
+  members:Array<MembersType>;
+  planActivities:Array<ActivityType>;
   letter:string;
   appendices:string;
 }
@@ -53,20 +43,27 @@ function AccreditationForm() {
     appendices:""
   });
 
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    }
-  ]
+  const handleAddMember = (data:MembersType): void =>{
+    setAccreditationData({...accreditationData, members:[...accreditationData.members, {
+      name:data.name,
+      position:data.position,
+      contactNumber:data.contactNumber,
+      studentNumber:data.studentNumber,
+    } ]})
+  }
+
+  // const handleAddActivities = (data: ActivityType): void =>{
+
+  // }
+
+  const handleDeleteMem = (e:React.FormEvent<HTMLButtonElement>, toDelete:number) =>{
+    e.preventDefault();
+    
+    const filteredData = accreditationData.members.filter((_, index) => toDelete !== index);
+
+    // Update the state with the filtered data
+    setAccreditationData({ ...accreditationData, members: filteredData });
+  }
 
   return (
     <section>
@@ -127,7 +124,7 @@ function AccreditationForm() {
 
         <div>
           <p className="font-bold">2. List Members, Permanent Contact Numbers & Student Number</p>
-          <Table>
+          <Table className="mb-2">
             {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
               <TableRow>
@@ -139,17 +136,17 @@ function AccreditationForm() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((invoice) => (
-                <TableRow key={invoice.invoice}>
-                  <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                  <TableCell>{invoice.paymentStatus}</TableCell>
-                  <TableCell>{invoice.paymentMethod}</TableCell>
-                  <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+              {accreditationData.members.map((member,index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{member.name}</TableCell>
+                  <TableCell>{member.position}</TableCell>
+                  <TableCell>{member.contactNumber}</TableCell>
+                  <TableCell className="text-right">{member.studentNumber}</TableCell>
                   <TableCell className="text-right">
                     <button className="text-2xl text-primary pe-2">
                       <FaEdit/>  
                     </button>
-                    <button className="text-2xl text-primary">
+                    <button onClick={(e)=>{handleDeleteMem(e,index)}} className="text-2xl text-primary">
                       <FaTrash/>  
                     </button>
                   </TableCell>
@@ -157,12 +154,14 @@ function AccreditationForm() {
               ))}
             </TableBody>
           </Table>
-          <AddMembers/>
+          <AddMembers
+            handleAddMember = {handleAddMember}
+          />
         </div>
 
         <div>
           <p className="font-bold">3. Plan Activities</p>
-          <Table>
+          <Table className="mb-2">
             {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
               <TableRow>
@@ -174,13 +173,13 @@ function AccreditationForm() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((invoice) => (
-                <TableRow key={invoice.invoice}>
-                  <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                  <TableCell>{invoice.paymentStatus}</TableCell>
-                  <TableCell>{invoice.paymentMethod}</TableCell>
-                  <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                  <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+              {accreditationData.planActivities.map((act,index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{act.activity}</TableCell>
+                  <TableCell>{act.learningOutcome}</TableCell>
+                  <TableCell>{act.targetTime}</TableCell>
+                  <TableCell className="text-right">{act.targetGroup}</TableCell>
+                  <TableCell className="text-right">{act.personsInvolved}</TableCell>
                   <TableCell className="text-right">
                     <button className="text-2xl text-primary pe-2">
                       <FaEdit/>  
