@@ -22,13 +22,85 @@ app.get('/', (req, res) => {
 // GET: Fetch all records from the "accreditation" table
 app.get('/accreditation', async (req, res) => {
     try {
-        const [data] = await db.query('SELECT * FROM accreditation');
-        res.json(data);
+        // SQL query to join the tables and fetch relevant data
+        const query = `
+            SELECT 
+                accre.accre_id,
+                accre.org_id,
+                accre.act_id,
+                accre.appendices,
+                accre.constitution,
+                accre.orgName,
+                accre.type,
+                accre.letter,
+                org.name AS member_name,
+                org.position AS member_position,
+                org.contactNumber AS member_contactNumber,
+                org.studentNumber AS member_studentNumber,
+                activity.activity AS plan_activity,
+                activity.learningOutcomes AS plan_learningOutcomes,
+                activity.targetTime AS plan_targetTime,
+                activity.targetGroup AS plan_targetGroup,
+                activity.personsInvolved AS plan_personsInvolved
+            FROM accreditation accre
+            LEFT JOIN org_member org ON accre.org_id = org.org_id
+            LEFT JOIN activity activity ON accre.act_id = activity.act_id;
+        `;
+        
+        // Fetch the data from the database
+        const [rows] = await db.query(query);
+        
+        // Transform the data into the structure expected by the frontend
+        const result = rows.reduce((acc, row) => {
+            // Find the existing accreditation entry in the accumulator or create one
+            let accreditation = acc.find(acc => acc.accre_id === row.accre_id);
+            if (!accreditation) {
+                accreditation = {
+                    accre_id: row.accre_id,
+                    org_id: row.org_id,
+                    act_id: row.act_id,
+                    appendices: row.appendices,
+                    constitution: row.constitution,
+                    orgName: row.orgName,
+                    type: row.type,
+                    letter: row.letter,
+                    members: [],
+                    planActivities: []
+                };
+                acc.push(accreditation);
+            }
+            
+            // Push the member and activity data into the appropriate arrays
+            if (row.member_name) {
+                accreditation.members.push({
+                    name: row.member_name,
+                    position: row.member_position,
+                    contactNumber: row.member_contactNumber,
+                    studentNumber: row.member_studentNumber
+                });
+            }
+            
+            if (row.plan_activity) {
+                accreditation.planActivities.push({
+                    activity: row.plan_activity,
+                    learningOutcomes: row.plan_learningOutcomes,
+                    targetTime: row.plan_targetTime,
+                    targetGroup: row.plan_targetGroup,
+                    personsInvolved: row.plan_personsInvolved
+                });
+            }
+            
+            return acc;
+        }, []);
+        
+        // Send the formatted data to the frontend
+        res.json(result);
     } catch (err) {
         console.error('Error fetching accreditation data:', err);
         res.status(500).json({ error: 'Failed to fetch accreditation data' });
     }
 });
+
 
 // POST: Insert a new record into the "accreditation" table
 app.post('/accreditation', async (req, res) => {
