@@ -1,8 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import RootLayout from "../components/RootLayout";
-import Home from "../pages/Home";
-import Requirements from "../pages/Requirements";
-import Application from "../pages/Application";
+import { About, Accreditation, AccreditationForm, Actions, Activities, Application, Home, Organizations, OsaServices, ReAccreditationForm, Requirements, RootLayout } from "../hooks/imports" 
 
 export const router = createBrowserRouter([
     {
@@ -14,13 +11,39 @@ export const router = createBrowserRouter([
                 element:<Home/>,
             },
             {
-                path:'/requirements',
-                element:<Requirements/>,
+                path:'/activities',
+                element:<Activities/>,
             },
             {
-                path:'/application',
-                element:<Application/>,
+                path:'/organizations',
+                element:<Organizations/>,
             },
+            {
+                path:'/accreditation',
+                element:<Accreditation/>,
+                children:[
+                    {
+                        path:'/accreditation',
+                        element:<Actions/>
+                    },
+                    {
+                        path:'accreditation-form',
+                        element:<AccreditationForm/>
+                    },
+                    {
+                        path:'re-accreditation-form',
+                        element:<ReAccreditationForm/>
+                    }
+                ]
+            },
+            {
+                path:'/osa-services',
+                element:<OsaServices/>,
+            },
+            {
+                path:'/about',
+                element:<About/>,
+            }
         ]
     }
 ]);
