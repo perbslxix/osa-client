@@ -13,7 +13,11 @@ import Actions from "../components/accreditations/Actions";
 import AccreditationForm from "../components/accreditations/AccreditationForm";
 import ReAccreditationForm from "../components/accreditations/ReAccreditationForm";
 
+const env = import.meta.env;
+const serverURL = env.VITE_API_URL;
+
 export {
+    serverURL,
     Nav,
     RootLayout,
     Accreditation,

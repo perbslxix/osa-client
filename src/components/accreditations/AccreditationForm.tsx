@@ -19,62 +19,144 @@ import {
   FaTrash
 } from "../../hooks/icons";
 import { useState } from "react";
-import { AddActivity, AddMembers } from "../modals/AccreditationFormModal";
-import { ActivityType, MembersType } from "../../types/accreditation";
-
-interface AccreditationType{
-  constitutionsAndByLaws:string;
-  organizationName:string;
-  type:string;
-  members:Array<MembersType>;
-  planActivities:Array<ActivityType>;
-  letter:string;
-  appendices:string;
-}
+import { AddActivity, AddMembers, EditActivity, EditMember } from "../modals/AccreditationFormModal";
+import { AccreditationType, ActivityType, MembersType } from "../../types/accreditation";
+import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { errorToast, successToast } from "../ui/toast";
+import axios, { isAxiosError } from "axios";
+import { serverURL } from "../../hooks/imports";
 
 function AccreditationForm() {
   const [accreditationData, setAccreditationData] = useState<AccreditationType>({
-    constitutionsAndByLaws:"",
-    organizationName:"",
-    type:"",
-    members:[],
-    planActivities:[],
-    letter:"",
-    appendices:""
+    constitutionsAndByLaws: "",
+    organizationName: "",
+    type: "",
+    members: [],
+    planActivities: [],
+    letter: "",
+    appendices: ""
   });
 
-  const handleAddMember = (data:MembersType): void =>{
-    setAccreditationData({...accreditationData, members:[...accreditationData.members, {
-      name:data.name,
-      position:data.position,
-      contactNumber:data.contactNumber,
-      studentNumber:data.studentNumber,
-    } ]})
-  }
+  const navigate = useNavigate();
 
-  // const handleAddActivities = (data: ActivityType): void =>{
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof AccreditationType) => {
+    const file = e.target.files ? e.target.files[0] : null;  // Only take the first file (single upload)
+    setAccreditationData(prev => ({
+      ...prev,
+      [field]: file
+    }));
+  };
 
-  // }
+  const handleAddMember = (data: MembersType): void => {
+    setAccreditationData({
+      ...accreditationData,
+      members: [
+        ...accreditationData.members,
+        {
+          name: data.name,
+          position: data.position,
+          contactNumber: data.contactNumber,
+          studentNumber: data.studentNumber,
+        }
+      ]
+    });
+  };
+  const handleActivity = (data: ActivityType): void => {
+    setAccreditationData({
+      ...accreditationData,
+      planActivities: [
+        ...accreditationData.planActivities,
+        {
+          activity: data.activity,
+          learningOutcome: data.learningOutcome,
+          targetTime: data.targetTime,
+          targetGroup: data.targetGroup,
+          personsInvolved: data.personsInvolved,
+        }
+      ]
+    });
+  };
 
-  const handleDeleteMem = (e:React.FormEvent<HTMLButtonElement>, toDelete:number) =>{
+  const handleDeleteMem = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
     e.preventDefault();
-    
     const filteredData = accreditationData.members.filter((_, index) => toDelete !== index);
-
-    // Update the state with the filtered data
     setAccreditationData({ ...accreditationData, members: filteredData });
-  }
+  };
+  const handleDeleteAct = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
+    e.preventDefault();
+    const filteredData = accreditationData.planActivities.filter((_, index) => toDelete !== index);
+    setAccreditationData({ ...accreditationData, planActivities: filteredData });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("orgName", accreditationData.organizationName);
+    formData.append("type", accreditationData.type);
+
+    // Append files with the correct field name
+    if (accreditationData.constitutionsAndByLaws) {
+        formData.append("constitution", accreditationData.constitutionsAndByLaws);
+    }
+    if (accreditationData.letter) {
+        formData.append("letter", accreditationData.letter);
+    }
+    if (accreditationData.appendices) {
+        formData.append("appendices", accreditationData.appendices);
+    }
+
+    // Append members and plan activities as JSON strings
+    formData.append("members", JSON.stringify(accreditationData.members));
+    formData.append("planActivities", JSON.stringify(accreditationData.planActivities));
+
+    try {
+        await axios.post(`${serverURL}/accreditation`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        
+        setAccreditationData({
+          constitutionsAndByLaws: "",
+          organizationName: "",
+          type: "",
+          members: [],
+          planActivities: [],
+          letter: "",
+          appendices: ""
+        })
+        successToast('Success')
+    } catch (error) {
+        if (isAxiosError(error)) {
+            errorToast(`${error.response?.data.message}`);
+        }
+        console.error(error);
+    }
+};
 
   return (
     <section>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
       <div className="flex items-center justify-between border-x-0 border-t-0 border-b-2 border-primary pb-3">
         <div>
           <h1 className="text-xl font-semibold">University of Nueva Caceres</h1>
           <h2 className="text-primary font-bold text-4xl">Accreditation Form</h2>
         </div>
         <div className="flex items-center gap-3">
-          <button className="bg-black text-white px-10 py-2 rounded-sm">Cancel</button>
-          <button className="bg-primary text-white px-10 py-2 rounded-sm">Submit</button>
+          <button onClick={()=>{navigate('/accreditation')}} className="bg-black text-white px-10 py-2 rounded-sm">Cancel</button>
+          <button 
+              onClick={handleSubmit} 
+              className="bg-primary text-white px-10 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.members.length <= 0 || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices}
+            >
+              Submit
+            </button>
         </div>
       </div>
       {/*  */}
@@ -89,6 +171,7 @@ function AccreditationForm() {
               type="file" 
               accept="application/pdf"
               className="p-[0.22rem]"
+              onChange={(e) => handleFileChange(e, 'constitutionsAndByLaws')}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -143,9 +226,11 @@ function AccreditationForm() {
                   <TableCell>{member.contactNumber}</TableCell>
                   <TableCell className="text-right">{member.studentNumber}</TableCell>
                   <TableCell className="text-right">
-                    <button className="text-2xl text-primary pe-2">
-                      <FaEdit/>  
-                    </button>
+                    <EditMember
+                      index = {index}
+                      accreditationData = {accreditationData}
+                      setAccreditationData = {setAccreditationData}
+                    />
                     <button onClick={(e)=>{handleDeleteMem(e,index)}} className="text-2xl text-primary">
                       <FaTrash/>  
                     </button>
@@ -181,10 +266,13 @@ function AccreditationForm() {
                   <TableCell className="text-right">{act.targetGroup}</TableCell>
                   <TableCell className="text-right">{act.personsInvolved}</TableCell>
                   <TableCell className="text-right">
-                    <button className="text-2xl text-primary pe-2">
-                      <FaEdit/>  
-                    </button>
-                    <button className="text-2xl text-primary">
+                    <EditActivity
+                      index = {index}
+                      accreditationData = {accreditationData}
+                      setAccreditationData = {setAccreditationData}
+                    />
+                    <button 
+                    onClick={(e)=>{handleDeleteAct(e,index)}}  className="text-2xl text-primary">
                       <FaTrash/>  
                     </button>
                   </TableCell>
@@ -192,7 +280,9 @@ function AccreditationForm() {
               ))}
             </TableBody>
           </Table>
-          <AddActivity/>
+          <AddActivity
+            handleActivity = {handleActivity}
+          />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -204,6 +294,7 @@ function AccreditationForm() {
             type="file" 
             accept="application/pdf"
             className="p-2"
+            onChange={(e) => handleFileChange(e, 'letter')}
           />
         </div>
 
@@ -216,6 +307,7 @@ function AccreditationForm() {
             type="file" 
             accept="application/pdf"
             className="p-2"
+            onChange={(e) => handleFileChange(e, 'appendices')}
           />
         </div>
       </form>

@@ -12,3 +12,13 @@ export interface ActivityType{
     targetGroup:string;
     personsInvolved:string;
 }
+
+export interface AccreditationType{
+    constitutionsAndByLaws:string;
+    organizationName:string;
+    type:string;
+    members:Array<MembersType>;
+    planActivities:Array<ActivityType>;
+    letter:string;
+    appendices:string;
+}
