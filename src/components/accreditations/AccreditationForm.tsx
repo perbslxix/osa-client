@@ -37,6 +37,7 @@ function AccreditationForm() {
     letter: "",
     appendices: ""
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -113,6 +114,7 @@ function AccreditationForm() {
     formData.append("planActivities", JSON.stringify(accreditationData.planActivities));
 
     try {
+        setIsLoading(true);
         await axios.post(`${serverURL}/accreditation`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -128,6 +130,7 @@ function AccreditationForm() {
           letter: "",
           appendices: ""
         })
+        setIsLoading(false);
         successToast('Success')
     } catch (error) {
         if (isAxiosError(error)) {
@@ -152,10 +155,13 @@ function AccreditationForm() {
           <button onClick={()=>{navigate('/accreditation')}} className="bg-black text-white px-10 py-2 rounded-sm">Cancel</button>
           <button 
               onClick={handleSubmit} 
-              className="bg-primary text-white px-10 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.members.length <= 0 || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices}
+              className="bg-primary text-white w-36 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.members.length <= 0 || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices || isLoading}
             >
-              Submit
+              {
+                isLoading ?
+                ('Loading...'):('Submit')
+              }
             </button>
         </div>
       </div>

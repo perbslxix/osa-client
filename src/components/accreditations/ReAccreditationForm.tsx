@@ -10,9 +10,14 @@ import {
     FaEdit,
     FaTrash
 } from "../../hooks/icons";
-import { AddBudgetAllocation, AddFinancialReports, AddMembers, AddPlanActivity, AddSourceOfFunds } from "../modals/ReAccreditationModal";
+import { AddActivity, AddBudgetAllocation, AddFinancialReports, AddMembers, AddSourceOfFunds, EditActivity, EditMember } from "../modals/ReAccreditationModal";
+import { useState } from "react";
+import { ActivityType, MembersType } from "../../types/accreditation";
 
 function ReAccreditationForm() {
+    const [orgMembers, setOrgMemebers] = useState<MembersType[]>([])
+    const [planAct, setPlanAct] = useState<ActivityType[]>([]);
+
     const invoices = [
         {
             invoice: "INV001",
@@ -28,6 +33,44 @@ function ReAccreditationForm() {
         }
     ]
 
+    const handleAddMember = (data: MembersType): void => {
+        setOrgMemebers([
+            ...orgMembers,
+            {
+                name: data.name,
+                position: data.position,
+                contactNumber: data.contactNumber,
+                studentNumber: data.studentNumber,
+            }
+        ]);
+    };
+
+    const handleDeleteMem = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
+        e.preventDefault();
+        const filteredData = orgMembers.filter((_, index) => toDelete !== index);
+
+        setOrgMemebers(filteredData);
+    };
+
+    const handleDeleteAct = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
+        e.preventDefault();
+        const filteredData = planAct.filter((_, index) => toDelete !== index);
+
+        setPlanAct(filteredData);
+    };
+
+    const handleActivity = (data: ActivityType): void => {
+        setPlanAct([
+            ...planAct,
+            {
+                activity: data.activity,
+                learningOutcome: data.learningOutcome,
+                targetTime: data.targetTime,
+                targetGroup: data.targetGroup,
+                personsInvolved: data.personsInvolved,
+            }
+        ]);
+    };
     return (
         <section>
             <div className="flex items-center justify-between border-x-0 border-t-0 border-b-2 border-primary pb-3">
@@ -44,7 +87,7 @@ function ReAccreditationForm() {
         <form className="mt-5 mb-20 flex flex-col gap-10">
             <div>
                 <p className="font-bold">1. List Members, Permanent Contact Numbers & Student Number</p>
-                <Table>
+                <Table className="mb-2">
                     {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                     <TableHeader>
                     <TableRow>
@@ -56,30 +99,34 @@ function ReAccreditationForm() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {invoices.map((invoice) => (
-                        <TableRow key={invoice.invoice}>
-                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                        <TableCell>{invoice.paymentStatus}</TableCell>
-                        <TableCell>{invoice.paymentMethod}</TableCell>
-                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                        <TableCell className="text-right">
-                            <button className="text-2xl text-primary pe-2">
-                            <FaEdit/>  
-                            </button>
-                            <button className="text-2xl text-primary">
-                            <FaTrash/>  
-                            </button>
-                        </TableCell>
-                        </TableRow>
-                    ))}
+                        {orgMembers.map((member,index) => (
+                            <TableRow key={index}>
+                                <TableCell className="font-medium">{member.name}</TableCell>
+                                <TableCell>{member.position}</TableCell>
+                                <TableCell>{member.contactNumber}</TableCell>
+                                <TableCell className="text-right">{member.studentNumber}</TableCell>
+                                <TableCell className="text-right">
+                                <EditMember
+                                    index = {index}
+                                    orgMembers = {orgMembers}
+                                    setOrgMemebers = {setOrgMemebers}
+                                />
+                                <button onClick={(e)=>{handleDeleteMem(e,index)}} className="text-2xl text-primary">
+                                    <FaTrash/>  
+                                </button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
-                <AddMembers/>
+                <AddMembers
+                    handleAddMember = {handleAddMember}
+                />
             </div>
 
             <div>
                 <p className="font-bold">2. Plan Activities</p>
-                <Table>
+                <Table className="mb-2">
                     {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                     <TableHeader>
                     <TableRow>
@@ -92,26 +139,31 @@ function ReAccreditationForm() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {invoices.map((invoice) => (
-                        <TableRow key={invoice.invoice}>
-                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                        <TableCell>{invoice.paymentStatus}</TableCell>
-                        <TableCell>{invoice.paymentMethod}</TableCell>
-                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                        <TableCell className="text-right w-[90px]">
-                            <button className="text-2xl text-primary pe-2">
-                            <FaEdit/>  
+                    {planAct.map((act,index) => (
+                        <TableRow key={index}>
+                            <TableCell className="font-medium">{act.activity}</TableCell>
+                            <TableCell>{act.learningOutcome}</TableCell>
+                            <TableCell>{act.targetTime}</TableCell>
+                            <TableCell className="text-right">{act.targetGroup}</TableCell>
+                            <TableCell className="text-right">{act.personsInvolved}</TableCell>
+                            <TableCell className="text-right">
+                            <EditActivity
+                                index = {index}
+                                planAct = {planAct}
+                                setPlanAct = {setPlanAct}
+                            />
+                            <button 
+                            onClick={(e)=>{handleDeleteAct(e,index)}}  className="text-2xl text-primary">
+                                <FaTrash/>  
                             </button>
-                            <button className="text-2xl text-primary">
-                            <FaTrash/>  
-                            </button>
-                        </TableCell>
+                            </TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
                 </Table>
-                <AddPlanActivity/>
+                <AddActivity
+                    handleActivity = {handleActivity}
+                />
             </div>
             <div>
                 <p className="font-bold">3. Financial Reports</p>
