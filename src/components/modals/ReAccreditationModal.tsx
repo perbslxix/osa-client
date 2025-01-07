@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../ui/dialog";
-import { AccreditationType, ActivityType, MembersType } from "../../types/accreditation";
+import { AccreditationType, ActivityType, FinancialReportsType, MembersType } from "../../types/accreditation";
 import {
     FaEdit
 } from "../../hooks/icons";
@@ -27,6 +27,14 @@ interface EditActProps{
     index: number;
     planAct: ActivityType[];
     setPlanAct:React.Dispatch<React.SetStateAction<ActivityType[]>>
+}
+interface FinancialReportProps{
+    handleFinancialReport: (data: FinancialReportsType) => void;
+}
+interface EditFinancialProps{
+    index:number;
+    financialReports: FinancialReportsType[];
+    setFinancialReports: React.Dispatch<React.SetStateAction<FinancialReportsType[]>>
 }
 
 export const AddMembers: React.FC<AddMemsProps> = ({handleAddMember})=> {
@@ -115,7 +123,6 @@ export const AddMembers: React.FC<AddMemsProps> = ({handleAddMember})=> {
         </Dialog>
     )
 }
-
 
 export const EditMember: React.FC<EditMemberProps> = ({index, orgMembers, setOrgMemebers})=> {
 
@@ -425,7 +432,23 @@ export const EditActivity: React.FC<EditActProps> = ({index, planAct, setPlanAct
     )
 }
 
-export function AddFinancialReports() {
+export const AddFinancialReports:React.FC<FinancialReportProps> = ({handleFinancialReport}) => {
+    const [data, setData] = useState<FinancialReportsType>({
+        title:"",
+        dateAndTime:"",
+        totalBudget:""
+    })
+
+    const handleSubmit = () =>{
+        handleFinancialReport(data)
+
+        setData({
+            title:"",
+            dateAndTime:"",
+            totalBudget:""
+        })
+    }
+    
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -441,14 +464,130 @@ export function AddFinancialReports() {
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input type="text" className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Title" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Date and Time" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Total Budget" required/>
+                    <input 
+                        type="text" 
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Title" 
+                        value={data.title}
+                        onChange={(e)=>{setData({...data, title:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Date and Time" 
+                        value={data.dateAndTime}
+                        onChange={(e)=>{setData({...data, dateAndTime:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Total Budget" 
+                        value={data.totalBudget}
+                        onChange={(e)=>{setData({...data, totalBudget:e.target.value})}}
+                        required
+                    />
                 </form>
                 <DialogFooter>
-                    <button type="submit" className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md">
-                        Submit
-                    </button>
+                    <DialogTrigger asChild>
+                        <button
+                            type="submit" className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
+                            onClick={handleSubmit}
+                            disabled={!data.title || !data.dateAndTime || !data.totalBudget}
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export const EditFinancialReport: React.FC<EditFinancialProps> = ({index, financialReports, setFinancialReports}) => {
+    
+    const [data, setData] = useState<FinancialReportsType>({
+        title:"",
+        dateAndTime:"",
+        totalBudget:""
+    })
+
+    const [uniqueId, setUniqueId] = useState<number>(0);
+
+    const handleSetData = () =>{
+        setUniqueId(index)
+        const oldData = financialReports[index]
+
+        setData({
+            title:oldData.title,
+            dateAndTime:oldData.dateAndTime,
+            totalBudget:oldData.totalBudget,
+        });
+    }
+
+    const handleSubmit = () =>{
+        // handleAddMember(data)
+        financialReports[uniqueId] = {...financialReports[uniqueId], ...data}
+        setFinancialReports([...financialReports])
+
+        setData({
+            title:"",
+            dateAndTime:"",
+            totalBudget:""
+        })
+    }
+    
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <button onClick={handleSetData} className="text-2xl text-primary pe-2">
+                    <FaEdit className="pointer-events-none"/>  
+                </button>
+            </DialogTrigger>
+            <DialogContent> 
+                <DialogHeader>
+                    <DialogTitle>
+                        <span className="text-primary font-bold">Financial Report</span>
+                    </DialogTitle>
+                    <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
+                </DialogHeader>
+                <form className="grid grid-cols-2 gap-5">
+                    <input 
+                        type="text" 
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Title" 
+                        value={data.title}
+                        onChange={(e)=>{setData({...data, title:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Date and Time" 
+                        value={data.dateAndTime}
+                        onChange={(e)=>{setData({...data, dateAndTime:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Total Budget" 
+                        value={data.totalBudget}
+                        onChange={(e)=>{setData({...data, totalBudget:e.target.value})}}
+                        required
+                    />
+                </form>
+                <DialogFooter>
+                    <DialogTrigger asChild>
+                        <button
+                            type="submit" 
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
+                            onClick={handleSubmit}
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -10,13 +10,14 @@ import {
     FaEdit,
     FaTrash
 } from "../../hooks/icons";
-import { AddActivity, AddBudgetAllocation, AddFinancialReports, AddMembers, AddSourceOfFunds, EditActivity, EditMember } from "../modals/ReAccreditationModal";
+import { AddActivity, AddBudgetAllocation, AddFinancialReports, AddMembers, AddSourceOfFunds, EditActivity, EditFinancialReport, EditMember } from "../modals/ReAccreditationModal";
 import { useState } from "react";
-import { ActivityType, MembersType } from "../../types/accreditation";
+import { ActivityType, FinancialReportsType, MembersType } from "../../types/accreditation";
 
 function ReAccreditationForm() {
     const [orgMembers, setOrgMemebers] = useState<MembersType[]>([])
     const [planAct, setPlanAct] = useState<ActivityType[]>([]);
+    const [financialReports, setFinancialReports] = useState<FinancialReportsType[]>([]);
 
     const invoices = [
         {
@@ -70,6 +71,23 @@ function ReAccreditationForm() {
                 personsInvolved: data.personsInvolved,
             }
         ]);
+    };
+
+    const handleFinancialReport = (data: FinancialReportsType): void => {
+        setFinancialReports([
+            ...financialReports,
+            {
+                title: data.title,
+                dateAndTime: data.dateAndTime,
+                totalBudget: data.totalBudget,
+            }
+        ]);
+    };
+    const handleDeleteFinancialReport = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
+        e.preventDefault();
+        const filteredData = financialReports.filter((_, index) => toDelete !== index);
+
+        setFinancialReports(filteredData);
     };
     return (
         <section>
@@ -153,7 +171,9 @@ function ReAccreditationForm() {
                                 setPlanAct = {setPlanAct}
                             />
                             <button 
-                            onClick={(e)=>{handleDeleteAct(e,index)}}  className="text-2xl text-primary">
+                                onClick={(e)=>{handleDeleteAct(e,index)}}  
+                                className="text-2xl text-primary"
+                            >
                                 <FaTrash/>  
                             </button>
                             </TableCell>
@@ -167,7 +187,7 @@ function ReAccreditationForm() {
             </div>
             <div>
                 <p className="font-bold">3. Financial Reports</p>
-                <Table>
+                <Table className="mb-2">
                     {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                     <TableHeader>
                     <TableRow>
@@ -177,24 +197,31 @@ function ReAccreditationForm() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {invoices.map((invoice) => (
-                        <TableRow key={invoice.invoice}>
-                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                        <TableCell>{invoice.paymentStatus}</TableCell>
-                        <TableCell>{invoice.paymentMethod}</TableCell>
-                        <TableCell className="text-right w-[90px]">
-                            <button className="text-2xl text-primary pe-2">
-                            <FaEdit/>  
-                            </button>
-                            <button className="text-2xl text-primary">
-                            <FaTrash/>  
-                            </button>
-                        </TableCell>
+                    {financialReports.map((financial, index) => (
+                        <TableRow key={index}>
+                            <TableCell className="font-medium">{financial.title}</TableCell>
+                            <TableCell>{financial.dateAndTime}</TableCell>
+                            <TableCell>{financial.totalBudget}</TableCell>
+                            <TableCell className="text-right w-[90px]">
+                                <EditFinancialReport
+                                    index = {index}
+                                    financialReports = {financialReports}
+                                    setFinancialReports = {setFinancialReports}
+                                />
+                                <button 
+                                    onClick={(e)=>{handleDeleteFinancialReport(e,index)}}  
+                                    className="text-2xl text-primary"
+                                >
+                                    <FaTrash/>  
+                                </button>
+                            </TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
                 </Table>
-                <AddFinancialReports/>
+                <AddFinancialReports
+                    handleFinancialReport = { handleFinancialReport }
+                />
             </div>
             <div>
                 <p className="font-bold">Source of Funds</p>
@@ -248,10 +275,10 @@ function ReAccreditationForm() {
                         <TableCell>{invoice.paymentStatus}</TableCell>
                         <TableCell className="text-right w-[90px]">
                             <button className="text-2xl text-primary pe-2">
-                            <FaEdit/>  
+                                <FaEdit/>  
                             </button>
                             <button className="text-2xl text-primary">
-                            <FaTrash/>  
+                                <FaTrash/>  
                             </button>
                         </TableCell>
                         </TableRow>

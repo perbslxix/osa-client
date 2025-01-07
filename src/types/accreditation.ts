@@ -13,6 +13,12 @@ export interface ActivityType{
     personsInvolved:string;
 }
 
+export interface FinancialReportsType{
+    title:string;
+    dateAndTime:string;
+    totalBudget:string;
+}
+
 export interface AccreditationType{
     constitutionsAndByLaws:string;
     organizationName:string;
