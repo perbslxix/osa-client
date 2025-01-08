@@ -28,3 +28,16 @@ export interface AccreditationType{
     letter:string;
     appendices:string;
 }
+
+export interface SourceOfFundsType{
+    source:string;
+    particulars:string;
+}
+
+export interface BudgetAllocationType{
+    source:string;
+    quantity:string;
+    unitPrice:string;
+    amount:string;
+    receipt:string;
+}

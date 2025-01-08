@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../ui/dialog";
-import { AccreditationType, ActivityType, FinancialReportsType, MembersType } from "../../types/accreditation";
+import { ActivityType, BudgetAllocationType, FinancialReportsType, MembersType, SourceOfFundsType } from "../../types/accreditation";
 import {
     FaEdit
 } from "../../hooks/icons";
@@ -35,6 +35,22 @@ interface EditFinancialProps{
     index:number;
     financialReports: FinancialReportsType[];
     setFinancialReports: React.Dispatch<React.SetStateAction<FinancialReportsType[]>>
+}
+interface AddSourceOfFundProps{
+    handleSourceOfFund: (data: SourceOfFundsType) => void
+}
+interface EditSourceOfFundsProps{
+    index:number;
+    sourceOfFunds: SourceOfFundsType[];
+    setSourceOfFunds: React.Dispatch<React.SetStateAction<SourceOfFundsType[]>>
+}
+interface AddBudgetAllocationProps{
+    handleAddBudgetAllocation: (data: BudgetAllocationType) => void;
+}
+interface EditBudgetAllocationProps{
+    index:number;
+    budgetAllocation: BudgetAllocationType[];
+    setBudgetAllocation: React.Dispatch<React.SetStateAction<BudgetAllocationType[]>>
 }
 
 export const AddMembers: React.FC<AddMemsProps> = ({handleAddMember})=> {
@@ -594,7 +610,20 @@ export const EditFinancialReport: React.FC<EditFinancialProps> = ({index, financ
     )
 }
 
-export function AddSourceOfFunds() {
+export const AddSourceOfFunds: React.FC<AddSourceOfFundProps> = ({handleSourceOfFund}) => {
+    const [data, setData] = useState<SourceOfFundsType>({
+        source:"",
+        particulars:""
+    })
+
+    const handleSubmit = () =>{
+        handleSourceOfFund(data)
+
+        setData({
+            source:"",
+            particulars:""
+        })
+    }
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -610,20 +639,136 @@ export function AddSourceOfFunds() {
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input type="text" className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Source" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Particulars" required/>
+                    <input 
+                        type="text" 
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Source" 
+                        value={data.source}
+                        onChange={(e)=>{setData({...data, source:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Particulars" 
+                        value={data.particulars}
+                        onChange={(e)=>{setData({...data, particulars:e.target.value})}}
+                        required
+                    />
                 </form>
                 <DialogFooter>
-                    <button type="submit" className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md">
-                        Submit
-                    </button>
+                    <DialogTrigger asChild>
+                        <button 
+                            onClick={handleSubmit} 
+                            type="submit" 
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
+                            disabled={!data.source || !data.particulars }
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
     )
 }
 
-export function AddBudgetAllocation() {
+export const EditSourceOfFunds: React.FC<EditSourceOfFundsProps> = ({index, sourceOfFunds, setSourceOfFunds}) =>{
+    const [data, setData] = useState<SourceOfFundsType>({
+        source:"",
+        particulars:""
+    })
+
+    const [uniqueId, setUniqueId] = useState<number>(0);
+
+    const handleSetData = () =>{
+        setUniqueId(index)
+        const oldData = sourceOfFunds[index]
+        console.log(oldData)
+        setData({
+            source:oldData.source,
+            particulars:oldData.particulars,
+        });
+    }
+
+    const handleSubmit = () =>{
+        // handleAddMember(data)
+        sourceOfFunds[uniqueId] = {...sourceOfFunds[uniqueId], ...data}
+        setSourceOfFunds([...sourceOfFunds])
+
+        setData({
+            source:"",
+            particulars:""
+        })
+    }
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <button onClick={handleSetData} className="text-2xl text-primary pe-2">
+                    <FaEdit className="pointer-events-none"/>  
+                </button>
+            </DialogTrigger>
+            <DialogContent> 
+                <DialogHeader>
+                    <DialogTitle>
+                        <span className="text-primary font-bold">Source of Funds</span>
+                    </DialogTitle>
+                    <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
+                </DialogHeader>
+                <form className="grid grid-cols-2 gap-5">
+                    <input 
+                        type="text" 
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Source" 
+                        value={data.source}
+                        onChange={(e)=>{setData({...data, source:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Particulars"
+                        value={data.particulars}
+                        onChange={(e)=>{setData({...data, particulars:e.target.value})}} 
+                        required
+                    />
+                </form>
+                <DialogFooter>
+                    <DialogTrigger asChild>
+                        <button
+                            type="submit" 
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
+                            onClick={handleSubmit}
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export const AddBudgetAllocation: React.FC<AddBudgetAllocationProps> = ({handleAddBudgetAllocation}) => {
+    const [data, setData] = useState<BudgetAllocationType>({
+        source:"",
+        quantity:"",
+        unitPrice:"",
+        amount:"",
+        receipt:""
+    })
+
+    const handleSubmit = () =>{
+        handleAddBudgetAllocation(data)
+
+        setData({
+            source:"",
+            quantity:"",
+            unitPrice:"",
+            amount:"",
+            receipt:""
+        })
+    }
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -639,16 +784,168 @@ export function AddBudgetAllocation() {
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input type="text" className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Source" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Quantity" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Unit Price" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Amount" required/>
-                    <input type="text" className="border-gray-200 border-[1px] p-2 rounded-md outline-none" placeholder="Receipt" required/>
+                    <input 
+                        type="text" 
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Source" 
+                        value={data.source}
+                        onChange={(e)=>{setData({...data, source:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Quantity" 
+                        value={data.quantity}
+                        onChange={(e)=>{setData({...data, quantity:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Unit Price" 
+                        value={data.unitPrice}
+                        onChange={(e)=>{setData({...data, unitPrice:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Amount" 
+                        value={data.amount}
+                        onChange={(e)=>{setData({...data, amount:e.target.value})}}
+                        required
+                        />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Receipt" 
+                        value={data.receipt}
+                        onChange={(e)=>{setData({...data, receipt:e.target.value})}}
+                        required
+                    />
                 </form>
                 <DialogFooter>
-                    <button type="submit" className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md">
-                        Submit
-                    </button>
+                    <DialogTrigger asChild>
+                        <button 
+                            onClick={handleSubmit} 
+                            type="submit" 
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
+                            disabled={!data.source || !data.quantity || !data.unitPrice || !data.amount || !data.receipt}
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export const EditBudgetAllocation: React.FC<EditBudgetAllocationProps> = ({index, budgetAllocation, setBudgetAllocation}) =>{
+    const [data, setData] = useState<BudgetAllocationType>({
+        source:"",
+        quantity:"",
+        unitPrice:"",
+        amount:"",
+        receipt:""
+    })
+
+    const [uniqueId, setUniqueId] = useState<number>(0);
+
+    const handleSetData = () =>{
+        setUniqueId(index)
+        const oldData = budgetAllocation[index]
+
+        setData({
+            source:oldData.source,
+            quantity:oldData.quantity,
+            unitPrice:oldData.unitPrice,
+            amount:oldData.amount,
+            receipt:oldData.receipt
+        });
+    }
+
+    const handleSubmit = () =>{
+        // handleAddMember(data)
+        budgetAllocation[uniqueId] = {...budgetAllocation[uniqueId], ...data}
+        setBudgetAllocation([...budgetAllocation])
+
+        setData({
+            source:"",
+            quantity:"",
+            unitPrice:"",
+            amount:"",
+            receipt:""
+        })
+    }
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <button onClick={handleSetData} className="text-2xl text-primary pe-2">
+                    <FaEdit className="pointer-events-none"/>  
+                </button>
+            </DialogTrigger>
+            <DialogContent> 
+                <DialogHeader>
+                    <DialogTitle>
+                        <span className="text-primary font-bold">Budget Allocation</span>
+                    </DialogTitle>
+                    <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
+                </DialogHeader>
+                <form className="grid grid-cols-2 gap-5">
+                    <input 
+                        type="text" 
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Source" 
+                        value={data.source}
+                        onChange={(e)=>{setData({...data, source:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Quantity" 
+                        value={data.quantity}
+                        onChange={(e)=>{setData({...data, quantity:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Unit Price" 
+                        value={data.unitPrice}
+                        onChange={(e)=>{setData({...data, unitPrice:e.target.value})}}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Amount" 
+                        value={data.amount}
+                        onChange={(e)=>{setData({...data, amount:e.target.value})}}
+                        required
+                        />
+                    <input 
+                        type="text" 
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                        placeholder="Receipt" 
+                        value={data.receipt}
+                        onChange={(e)=>{setData({...data, receipt:e.target.value})}}
+                        required
+                    />
+                </form>
+                <DialogFooter>
+                    <DialogTrigger asChild>
+                        <button 
+                            onClick={handleSubmit} 
+                            type="submit" 
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
+                            disabled={!data.source || !data.quantity || !data.unitPrice || !data.amount || !data.receipt}
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
