@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../components/ui/select";
 import {
   Table,
   TableBody,
@@ -13,17 +13,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "../../components/ui/table";
 import {
-  FaEdit,
   FaTrash
 } from "../../hooks/icons";
 import { useState } from "react";
-import { AddActivity, AddMembers, EditActivity, EditMember } from "../modals/AccreditationFormModal";
+import { AddActivity, AddMembers, EditActivity, EditMember } from "../../components/modals/AccreditationFormModal";
 import { AccreditationType, ActivityType, MembersType } from "../../types/accreditation";
 import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { errorToast, successToast } from "../ui/toast";
+import { errorToast, successToast } from "../../components/ui/toast";
 import axios, { isAxiosError } from "axios";
 import { serverURL } from "../../hooks/imports";
 
@@ -148,8 +147,7 @@ function AccreditationForm() {
       />
       <div className="flex items-center justify-between border-x-0 border-t-0 border-b-2 border-primary pb-3">
         <div>
-          <h1 className="text-xl font-semibold">University of Nueva Caceres</h1>
-          <h2 className="text-primary font-bold text-4xl">Accreditation Form</h2>
+          <h1 className="text-primary font-bold text-4xl">Accreditation Form</h1>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={()=>{navigate('/accreditation')}} className="bg-black text-white px-10 py-2 rounded-sm">Cancel</button>
