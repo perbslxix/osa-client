@@ -1,4 +1,4 @@
-import { AccreditationModal, ReAccreditationModal } from "../modals/AccreditationModal";
+import { AccreditationModal, ReAccreditationModal } from "../../components/modals/AccreditationModal";
 
 function Actions() {
     return (

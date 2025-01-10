@@ -9,9 +9,11 @@ import Activities from "../pages/Activities";
 import Organizations from "../pages/Organizations";
 import OsaServices from "../pages/OsaServices";
 import About from "../pages/About";
-import Actions from "../components/accreditations/Actions";
-import AccreditationForm from "../components/accreditations/AccreditationForm";
-import ReAccreditationForm from "../components/accreditations/ReAccreditationForm";
+import Actions from "../pages/accreditations/Actions";
+import AccreditationForm from "../pages/accreditations/AccreditationForm";
+import ReAccreditationForm from "../pages/accreditations/ReAccreditationForm";
+import Dashboard from "../pages/Dashboard";
+import ApprovalApplication from "../pages/accreditations/ApprovalApplication";
 
 const env = import.meta.env;
 const serverURL = env.VITE_API_URL;
@@ -31,5 +33,7 @@ export {
     About,
     Actions,
     AccreditationForm,
-    ReAccreditationForm
+    ReAccreditationForm,
+    Dashboard,
+    ApprovalApplication
 }
