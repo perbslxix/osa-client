@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { About, Accreditation, AccreditationForm, Actions, Activities, Home, Organizations, OsaServices, ReAccreditationForm, RootLayout } from "../hooks/imports" 
+import { About, Accreditation, AccreditationForm, Actions, Activities, ApprovalApplication, Dashboard, Home, Organizations, OsaServices, ReAccreditationForm, RootLayout } from "../hooks/imports" 
 
 export const router = createBrowserRouter([
     {
@@ -43,6 +43,14 @@ export const router = createBrowserRouter([
             {
                 path:'/about',
                 element:<About/>,
+            },
+            {
+                path:'/dashboard',
+                element:<Dashboard/>
+            },
+            {
+                path:'/applications',
+                element:<ApprovalApplication/>
             }
         ]
     }

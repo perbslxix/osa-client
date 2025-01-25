@@ -5,12 +5,12 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../ui/table";
+} from "../../components/ui/table";
 import {
     FaEdit,
     FaTrash
 } from "../../hooks/icons";
-import { AddActivity, AddBudgetAllocation, AddFinancialReports, AddMembers, AddSourceOfFunds, EditActivity, EditBudgetAllocation, EditFinancialReport, EditMember, EditSourceOfFunds } from "../modals/ReAccreditationModal";
+import { AddActivity, AddBudgetAllocation, AddFinancialReports, AddMembers, AddSourceOfFunds, EditActivity, EditBudgetAllocation, EditFinancialReport, EditMember, EditSourceOfFunds } from "../../components/modals/ReAccreditationModal";
 import { useState } from "react";
 import { ActivityType, BudgetAllocationType, FinancialReportsType, MembersType, SourceOfFundsType } from "../../types/accreditation";
 import { Toaster } from "react-hot-toast";
