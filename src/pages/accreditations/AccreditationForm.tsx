@@ -67,6 +67,7 @@ function AccreditationForm() {
       ]
     });
   };
+
   const handleAddOfficers = (data: MembersType): void => {
     setAccreditationData({
       ...accreditationData,
@@ -82,6 +83,7 @@ function AccreditationForm() {
       ]
     });
   };
+
   const handleActivity = (data: ActivityType): void => {
     setAccreditationData({
       ...accreditationData,
@@ -104,11 +106,13 @@ function AccreditationForm() {
     const filteredData = accreditationData.members.filter((_, index) => toDelete !== index);
     setAccreditationData({ ...accreditationData, members: filteredData });
   };
+  
   const handleDeleteOff = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
     e.preventDefault();
     const filteredData = accreditationData.officers.filter((_, index) => toDelete !== index);
     setAccreditationData({ ...accreditationData, officers: filteredData });
   };
+
   const handleDeleteAct = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
     e.preventDefault();
     const filteredData = accreditationData.planActivities.filter((_, index) => toDelete !== index);
@@ -118,7 +122,7 @@ function AccreditationForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(file) //here
+    // console.log(file) // debug
     const formData = new FormData();
     formData.append("orgName", accreditationData.organizationName);
     formData.append("type", accreditationData.type);
@@ -133,11 +137,10 @@ function AccreditationForm() {
     if (accreditationData.appendices) {
       formData.append("appendices", accreditationData.appendices);
     }
-    if (accreditationData.membersFile) {
-      formData.append("membersFile", accreditationData.membersFile);
+    if (membersFile) {
+      formData.append("membersFile", membersFile);
     }
-    
-
+    console.log(membersFile)
     // Append members and plan activities as JSON strings
     formData.append("members", JSON.stringify(accreditationData.members));
     formData.append("planActivities", JSON.stringify(accreditationData.planActivities));
@@ -172,8 +175,8 @@ function AccreditationForm() {
     }
   };
 
-  const [file, setFile] = useState<File | null>(null)
-  const [fileName, setFileName] = useState<String>("No Selected File")
+  const [membersFile, setMembersFile] = useState<File | null>(null)
+  const [fileName, setFileName] = useState<String>("No file Selected")
   const inputRef = useRef<HTMLInputElement>(null)
   
   const handleUploadClick = () => {
@@ -183,10 +186,10 @@ function AccreditationForm() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
-      setFile(selectedFile)
+      setMembersFile(selectedFile)
       setFileName(selectedFile.name)
     } else {
-      setFile(null)
+      setMembersFile(null)
       setFileName("No Selected File")
     }
   }
@@ -207,7 +210,7 @@ function AccreditationForm() {
           <button
             onClick={handleSubmit}
             className="bg-primary text-white w-36 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!file || !accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.members.length <= 0 || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices || isLoading}
+            disabled={!membersFile || !accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices || isLoading}
           >
             {
               isLoading ?
@@ -216,14 +219,13 @@ function AccreditationForm() {
           </button>
         </div>
       </div>
-      {/*  */}
       <form className="mt-5 mb-20 flex flex-col gap-10">
         <div className="grid grid-cols-3 gap-5">
           <div className="flex flex-col gap-2">
             <label htmlFor="consti-law" className="font-bold">
               1. Constitutions & By-Laws
             </label>
-            <input
+            <input // file
               name="consti-law"
               type="file"
               accept="application/pdf"
@@ -265,7 +267,6 @@ function AccreditationForm() {
         <div>
           <p className="font-bold">2. List Members, Permanent Contact Numbers & Student Number</p>
           <Table className="mb-2">
-            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
               <TableRow>
                 <TableHead>Email</TableHead>
@@ -273,7 +274,6 @@ function AccreditationForm() {
                 <TableHead>Position</TableHead>
                 <TableHead>Contact Number</TableHead>
                 <TableHead className="text-right">Student Number</TableHead>
-                {/* <TableHead className="text-right">Action</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>

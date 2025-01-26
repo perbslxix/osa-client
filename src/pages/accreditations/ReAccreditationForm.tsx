@@ -10,9 +10,9 @@ import {
     FaEdit,
     FaTrash
 } from "../../hooks/icons";
-import { AddActivity, AddBudgetAllocation, AddFinancialReports, AddMembers, AddSourceOfFunds, EditActivity, EditBudgetAllocation, EditFinancialReport, EditMember, EditSourceOfFunds } from "../../components/modals/ReAccreditationModal";
+import { AddActivity,  AddFinancialReports, AddMembers, EditActivity, EditFinancialReport, EditMember, AddAccomplishmentReports, EditAccomplishmentReport } from "../../components/modals/ReAccreditationModal";
 import { useState } from "react";
-import { ActivityType, BudgetAllocationType, FinancialReportsType, MembersType, SourceOfFundsType } from "../../types/accreditation";
+import { AccomplishmentReportsType, ActivityType, FinancialReportsType, MembersType, } from "../../types/accreditation";
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -22,11 +22,13 @@ function ReAccreditationForm() {
     const [orgMembers, setOrgMemebers] = useState<MembersType[]>([]);
     const [planAct, setPlanAct] = useState<ActivityType[]>([]);
     const [financialReports, setFinancialReports] = useState<FinancialReportsType[]>([]);
-    const [sourceOfFunds, setSourceOfFunds] = useState<SourceOfFundsType[]>([]);
-    const [budgetAllocation, setBudgetAllocation] = useState<BudgetAllocationType[]>([]);
+    const [accomplishmentReports, setAccomplishmentReports] = useState<AccomplishmentReportsType[]>([]);
+    // const [sourceOfFunds, setSourceOfFunds] = useState<SourceOfFundsType[]>([]);
+    // const [budgetAllocation, setBudgetAllocation] = useState<BudgetAllocationType[]>([]);
     const [adviserLetter, setAdviserLetter] = useState<File | null>(null);
     const [appendices, setAppendecis] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    
     // Generic utility function for adding items to a list
     const addItem = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, newItem: T): void => {
         setList([...list, newItem]);
@@ -64,23 +66,32 @@ function ReAccreditationForm() {
         deleteItem(e, financialReports, setFinancialReports, indexToDelete);
     };
 
-    const handleAddSourceOfFund = (data: SourceOfFundsType): void => {
-        addItem(sourceOfFunds, setSourceOfFunds, data);
+    const handleAddAccomplishmentReport = (data: AccomplishmentReportsType): void => {
+        addItem(accomplishmentReports, setAccomplishmentReports, data);
     };
 
-    const handleDeleteSourceOfFund = (e:React.FormEvent<HTMLButtonElement>, indexToDelete: number): void => {
-        deleteItem(e, sourceOfFunds, setSourceOfFunds, indexToDelete);
-    }
-
-    const handleAddBudgetAllocation = (data: BudgetAllocationType): void => {
-        addItem(budgetAllocation, setBudgetAllocation, data);
+    const handleDeleteAccomplishmentReport = (e:React.FormEvent<HTMLButtonElement>, indexToDelete: number): void => {
+        deleteItem(e, accomplishmentReports, setAccomplishmentReports, indexToDelete);
     };
+    // DONT TOUCH
+    // const handleAddSourceOfFund = (data: SourceOfFundsType): void => {
+    //     addItem(sourceOfFunds, setSourceOfFunds, data);
+    // };
 
-    const handleDeleteBudgetAllocation = (e:React.FormEvent<HTMLButtonElement>, indexToDelete: number): void => {
-        deleteItem(e, budgetAllocation, setBudgetAllocation, indexToDelete);
-    }
+    // const handleDeleteSourceOfFund = (e:React.FormEvent<HTMLButtonElement>, indexToDelete: number): void => {
+    //     deleteItem(e, sourceOfFunds, setSourceOfFunds, indexToDelete);
+    // }
+
+    // const handleAddBudgetAllocation = (data: BudgetAllocationType): void => {
+    //     addItem(budgetAllocation, setBudgetAllocation, data);
+    // };
+
+    // const handleDeleteBudgetAllocation = (e:React.FormEvent<HTMLButtonElement>, indexToDelete: number): void => {
+    //     deleteItem(e, budgetAllocation, setBudgetAllocation, indexToDelete);
+    // }
 
     // Handle file selection and read as string
+    
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFileData: React.Dispatch<React.SetStateAction<File | null>>) => {
         const file = e.target.files ? e.target.files[0] : null; // Take the first file (if any)
         setFileData(file); // Save the file object in state
@@ -91,14 +102,16 @@ function ReAccreditationForm() {
             orgMembers: [...orgMembers],
             activities: [...planAct],
             financialReports: [...financialReports],
-            sourceOfFunds: [...sourceOfFunds],
-            budgetAllocation: [...budgetAllocation],
+            accomplishmentReports: [...accomplishmentReports],
+            // sourceOfFunds: [...sourceOfFunds],
+            // budgetAllocation: [...budgetAllocation],
             adviserLetter,
             appendices
         }
 
         console.log(data)
     }
+
     return (
         <section>
             <Toaster
@@ -115,7 +128,7 @@ function ReAccreditationForm() {
                     <button 
                         onClick={handleSubmit} 
                         className="bg-primary text-white w-36 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={orgMembers.length <= 0 || planAct.length <= 0 || financialReports.length <=0 || sourceOfFunds.length <= 0 || budgetAllocation.length <= 0 || !adviserLetter || !appendices || isLoading}
+                        disabled={orgMembers.length <= 0 || planAct.length <= 0 || financialReports.length <=0 || !adviserLetter || !appendices || isLoading}
                     >
                         {
                             isLoading ?
@@ -124,19 +137,52 @@ function ReAccreditationForm() {
                     </button>
                 </div>
             </div>
+            
             {/*  */}
             <form className="mt-5 mb-20 flex flex-col gap-10">
-                <div>
-                    <p className="font-bold">1. List Members, Permanent Contact Numbers & Student Number</p>
+            {/* <div className="grid grid-cols-3 gap-5">
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="oraganizationName" className="font-bold">
+                    Organization Name
+                    </label>
+                    <input
+                    name="oraganizationName"
+                    type="text"
+                    className="border-[1px] border-gray-200 rounded-sm p-[0.40rem] outline-none"
+                    placeholder="Organization Name"
+                    value={accreditationData.organizationName}
+                    onChange={(e) => setAccreditationData({ ...accreditationData, organizationName: e.target.value })}
+                    />
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="type" className="font-bold">
+                    Type
+                    </label>
+                    <Select value={accreditationData.type} onValueChange={(e) => { setAccreditationData({ ...accreditationData, type: e }) }}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Acads or Non-Acads " />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                        <SelectItem value="acads">Acads</SelectItem>
+                        <SelectItem value="non-acads">Non-Acads</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                    </Select>
+                </div>
+            </div> */}
+            <div>
+                    <p className="font-bold">1. List Officers, Permanent Contact Numbers & Student Number</p>
                     <Table className="mb-2">
                         {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                         <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
                             <TableHead>Position</TableHead>
+                            <TableHead>Email</TableHead>
                             <TableHead>Contact Number</TableHead>
                             <TableHead className="text-right">Student Number</TableHead>
-                            <TableHead className="text-right">Action</TableHead>
+                            <TableCell className="text-right"></TableCell>
                         </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -144,6 +190,7 @@ function ReAccreditationForm() {
                                 <TableRow key={index}>
                                     <TableCell className="font-medium">{member.name}</TableCell>
                                     <TableCell>{member.position}</TableCell>
+                                    <TableCell>{member.email}</TableCell>
                                     <TableCell>{member.contactNumber}</TableCell>
                                     <TableCell className="text-right">{member.studentNumber}</TableCell>
                                     <TableCell className="text-right">
@@ -166,7 +213,48 @@ function ReAccreditationForm() {
                 </div>
 
                 <div>
-                    <p className="font-bold">2. Plan Activities</p>
+                    <p className="font-bold">2. List Members, Permanent Contact Numbers & Student Number</p>
+                    <Table className="mb-2">
+                        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
+                        <TableHeader>
+                        <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Position</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Contact Number</TableHead>
+                            <TableHead className="text-right">Student Number</TableHead>
+                            <TableCell className="text-right"></TableCell>
+                        </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {orgMembers.map((member,index) => (
+                                <TableRow key={index}>
+                                    <TableCell className="font-medium">{member.name}</TableCell>
+                                    <TableCell>{member.position}</TableCell>
+                                    <TableCell>{member.email}</TableCell>
+                                    <TableCell>{member.contactNumber}</TableCell>
+                                    <TableCell className="text-right">{member.studentNumber}</TableCell>
+                                    <TableCell className="text-right">
+                                    <EditMember
+                                        index = {index}
+                                        orgMembers = {orgMembers}
+                                        setOrgMemebers = {setOrgMemebers}
+                                    />
+                                    <button onClick={(e)=>{handleDeleteMember(e,index)}} className="text-2xl text-primary">
+                                        <FaTrash/>  
+                                    </button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                    <AddMembers
+                        handleAddMember = {handleAddMember}
+                    />
+                </div>
+
+                <div>
+                    <p className="font-bold">3. Plan Activities</p>
                     <Table className="mb-2">
                         {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                         <TableHeader>
@@ -208,15 +296,22 @@ function ReAccreditationForm() {
                         handleActivity = {handleAddActivity}
                     />
                 </div>
+
                 <div>
-                    <p className="font-bold">3. Financial Reports</p>
+                    <p className="font-bold">4. Financial Reports</p>
                     <Table className="mb-2">
-                        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                         <TableHeader>
                         <TableRow>
                             <TableHead>Title</TableHead>
                             <TableHead>Date and Time</TableHead>
                             <TableHead>Total Budget</TableHead>
+                            <TableHead>Source</TableHead>
+                            <TableHead>Particulars</TableHead>
+                            <TableHead>Items</TableHead>
+                            <TableHead>Quantity</TableHead>
+                            <TableHead>Unit Price</TableHead>
+                            <TableHead>Amount</TableHead>
+                            <TableHead>Receipt</TableHead>
                         </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -225,6 +320,13 @@ function ReAccreditationForm() {
                                 <TableCell className="font-medium">{financial.title}</TableCell>
                                 <TableCell>{financial.dateAndTime}</TableCell>
                                 <TableCell>{financial.totalBudget}</TableCell>
+                                <TableCell>{financial.source}</TableCell>
+                                <TableCell>{financial.particulars}</TableCell>
+                                <TableCell>{financial.items}</TableCell>
+                                <TableCell>{financial.quantity}</TableCell>
+                                <TableCell>{financial.unitPrice}</TableCell>
+                                <TableCell>{financial.amount}</TableCell>
+                                <TableCell>{financial.receipt}</TableCell>
                                 <TableCell className="text-right w-[90px]">
                                     <EditFinancialReport
                                         index = {index}
@@ -246,10 +348,56 @@ function ReAccreditationForm() {
                         handleFinancialReport = { handleAddFinancialReport }
                     />
                 </div>
+                
                 <div>
+                    <p className="font-bold">5. Accomplishment Reports</p>
+                    <Table className="mb-2">
+                        <TableHeader>
+                        <TableRow>
+                            <TableHead>Title</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Venue</TableHead>
+                            <TableHead>Participants</TableHead>
+                            <TableHead>Speakers</TableHead>
+                            <TableHead>Body</TableHead>
+                        </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                        {accomplishmentReports.map((accomplishment, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="font-medium">{accomplishment.title}</TableCell>
+                                <TableCell>{accomplishment.date}</TableCell>
+                                <TableCell>{accomplishment.venue}</TableCell>
+                                <TableCell>{accomplishment.participants}</TableCell>
+                                <TableCell>{accomplishment.speaker}</TableCell>
+                                <TableCell>{accomplishment.body}</TableCell>
+                                
+                                <TableCell className="text-right w-[90px]">
+                                    <EditAccomplishmentReport
+                                        index = {index}
+                                        accomplishmentReports = {accomplishmentReports}
+                                        setAccomplishmentReports = {setAccomplishmentReports}
+                                    />
+                                    <button 
+                                        onClick={(e)=>{handleDeleteAccomplishmentReport(e, index)}}  
+                                        className="text-2xl text-primary"
+                                    >
+                                        <FaTrash/>  
+                                    </button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
+                    <AddAccomplishmentReports
+                        handleAccomplishmentReport = { handleAddAccomplishmentReport }
+                    />
+                </div>
+
+
+                {/*<div>
                     <p className="font-bold">Source of Funds</p>
                     <Table className="mb-2">
-                        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                         <TableHeader>
                         <TableRow>
                             <TableHead>Source</TableHead>
@@ -281,11 +429,12 @@ function ReAccreditationForm() {
                     <AddSourceOfFunds
                         handleSourceOfFund = {handleAddSourceOfFund}
                     />
-                </div>
+                </div> 
+                
+                
                 <div>
                     <p className="font-bold">Budget Allocation</p>
                     <Table className="mb-2">
-                        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                         <TableHeader>
                         <TableRow>
                             <TableHead>Source</TableHead>
@@ -320,11 +469,11 @@ function ReAccreditationForm() {
                     <AddBudgetAllocation
                         handleAddBudgetAllocation = {handleAddBudgetAllocation}
                     />
-                </div>
+                </div> */}
 
                 <div className="flex flex-col gap-2">
                 <label htmlFor="adviser-letter" className="font-bold">
-                    4. Adviser's letter of Acceptance
+                    6. Adviser's letter of Acceptance
                 </label>
                 <input 
                     name="adviser-letter" 
@@ -337,7 +486,7 @@ function ReAccreditationForm() {
 
                 <div className="flex flex-col gap-2">
                 <label htmlFor="appendices" className="font-bold">
-                    5. Appendices
+                    7. Appendices
                 </label>
                 <input 
                     name="appendices" 

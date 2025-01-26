@@ -21,6 +21,13 @@ interface AddActivityProps {
   handleActivity: (data: ActivityType) => void;
 }
 
+interface EditMemberProps {
+  index: number,
+  accreditationData: AccreditationType,
+  setAccreditationData: React.Dispatch<React.SetStateAction<AccreditationType>>
+  isOfficer?: boolean
+}
+
 export const AddMembers: React.FC<AddMemsProps> = ({ handleAddMember, isOfficer = false }) => {
   const [data, setData] = useState<MembersType>({
     email: "",
@@ -214,13 +221,6 @@ export const AddActivity: React.FC<AddActivityProps> = ({ handleActivity }) => {
   )
 }
 
-interface EditMemberProps {
-  index: number,
-  accreditationData: AccreditationType,
-  setAccreditationData: React.Dispatch<React.SetStateAction<AccreditationType>>
-  isOfficer?: boolean
-}
-
 export const EditMember: React.FC<EditMemberProps> = ({ index, accreditationData, setAccreditationData, isOfficer = false }) => {
 
   const [data, setData] = useState<MembersType>({
@@ -235,7 +235,7 @@ export const EditMember: React.FC<EditMemberProps> = ({ index, accreditationData
 
   const handleSetData = () => {
     setUniqueId(index)
-    const oldData = (isOfficer) ? accreditationData.officers[index] : accreditationData.members[index]
+    const oldData = (isOfficer) ? accreditationData.officers[index] : accreditationData.members[index] // isOfficer logic
 
     setData({
       email: oldData.email,
@@ -245,6 +245,7 @@ export const EditMember: React.FC<EditMemberProps> = ({ index, accreditationData
       studentNumber: oldData.studentNumber
     });
   }
+
   const handleSubmit = () => {
     // handleAddMember(data)
     if (isOfficer) {
@@ -252,7 +253,7 @@ export const EditMember: React.FC<EditMemberProps> = ({ index, accreditationData
     } else {
       accreditationData.members[uniqueId] = { ...accreditationData.members[uniqueId], ...data }
     }
-    console.log(accreditationData);
+    console.log(accreditationData); // debug
     setAccreditationData({ ...accreditationData, members: [...accreditationData.members] })
 
     setData({

@@ -18,6 +18,22 @@
     title: string;
     dateAndTime: string;
     totalBudget: string;
+    source: string;
+    particulars: string;
+    items: string;
+    quantity: string;
+    unitPrice: string;
+    amount: string;
+    receipt: string;
+  }
+
+  export interface AccomplishmentReportsType {
+    title: string;
+    date: string; 
+    venue: string; 
+    participants: string; 
+    speaker: string; 
+    body: string; 
   }
   
   export interface AccreditationType {
@@ -32,15 +48,16 @@
     membersFile: string;
   }
   
-  export interface SourceOfFundsType {
-    source: string;
-    particulars: string;
-  }
+  // DONT TOUCH PLS
+  // export interface SourceOfFundsType {
+  //   source: string;
+  //   particulars: string;
+  // }
   
-  export interface BudgetAllocationType {
-    source: string;
-    quantity: string;
-    unitPrice: string;
-    amount: string;
-    receipt: string;
-  }
+  // export interface BudgetAllocationType {
+  //   items: string;
+  //   quantity: string;
+  //   unitPrice: string;
+  //   amount: string;
+  //   receipt: string;
+  // }
