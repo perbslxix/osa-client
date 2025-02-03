@@ -8,7 +8,7 @@ function Actions() {
                 <h1 className='text-4xl font-bold'>Accreditation</h1>
                 <h2>Choose what action you would like to do.</h2>
             </div>
-            <div className='grid grid-cols-2 gap-10 mt-10'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mt-10'>
                 <AccreditationModal/>
                 <ReAccreditationModal/>
             </div>

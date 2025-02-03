@@ -5,7 +5,9 @@ function RootLayout() {
     return (
         <main className="flex flex-col h-screen overflow-y-auto">
             <Nav/>
-            <Outlet />
+            <div className="flex-1 flex-col justify center flex">
+                <Outlet />
+            </div>
             <Footer/>
         </main>
     )
