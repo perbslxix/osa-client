@@ -46,6 +46,16 @@
     letter: string;
     appendices: string;
     membersFile: string;
+    officersFile: string;
+  }
+
+  export interface reAccreditationType {
+    members: Array<MembersType>;
+    accomplishmentReports: Array<AccomplishmentReportsType>;
+    financialReports: Array<FinancialReportsType>;
+    planActivities: Array<ActivityType>;
+    letter: string; 
+    appendices: string; 
   }
   
   // DONT TOUCH PLS

@@ -34,6 +34,7 @@ function AccreditationForm() {
     members: [],
     membersFile: "",
     officers: [],
+    officersFile: "",
     planActivities: [],
     letter: "",
     appendices: ""
@@ -140,7 +141,10 @@ function AccreditationForm() {
     if (membersFile) {
       formData.append("membersFile", membersFile);
     }
-    console.log(membersFile)
+    if (officersFile) {
+      formData.append("officersFile", officersFile);
+    }
+    // console.log(officersFile)
     // Append members and plan activities as JSON strings
     formData.append("members", JSON.stringify(accreditationData.members));
     formData.append("planActivities", JSON.stringify(accreditationData.planActivities));
@@ -164,6 +168,7 @@ function AccreditationForm() {
         letter: "",
         appendices: "",
         membersFile: "",
+        officersFile: "",
       })
       setIsLoading(false);
       successToast('Success')
@@ -178,9 +183,17 @@ function AccreditationForm() {
   const [membersFile, setMembersFile] = useState<File | null>(null)
   const [fileName, setFileName] = useState<String>("No file Selected")
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const [officersFile, setOfficersFile] = useState<File | null>(null)
+  const [fileName1, setFileName1] = useState<String>("No file Selected")
+  const inputRef1 = useRef<HTMLInputElement>(null)
   
   const handleUploadClick = () => {
     inputRef.current?.click()
+  }
+
+  const handleUploadClick1 = () => {
+    inputRef1.current?.click()
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,6 +204,17 @@ function AccreditationForm() {
     } else {
       setMembersFile(null)
       setFileName("No Selected File")
+    }
+  }
+
+  const handleInputOfficer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0]
+    if (selectedFile) {
+      setOfficersFile(selectedFile)
+      setFileName1(selectedFile.name)
+    } else {
+      setOfficersFile(null)
+      setFileName1("No Selected File")
     }
   }
 
@@ -302,7 +326,7 @@ function AccreditationForm() {
             <AddMembers
               handleAddMember={handleAddMember}
             />
-            <button type="button" className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick}>Test</button>
+            <button type="button" className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick}>CSV Uploads</button>
             <span>{fileName}</span>
             <input
               onChange={handleInputChange}
@@ -357,11 +381,11 @@ function AccreditationForm() {
               handleAddMember={handleAddOfficers}
               isOfficer
             />
-            <button type="button" className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick}>Test</button>
-            <span>{fileName}</span>
+            <button type="button" className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick1}>CSV Uploads</button>
+            <span>{fileName1}</span>
             <input
-              onChange={handleInputChange}
-              ref={inputRef}
+              onChange={handleInputOfficer}
+              ref={inputRef1}
               name="Upload CSV"
               type="file"
               accept=".csv"

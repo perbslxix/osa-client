@@ -15,6 +15,9 @@ import { useState } from "react";
 import { AccomplishmentReportsType, ActivityType, FinancialReportsType, MembersType, } from "../../types/accreditation";
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import axios, { isAxiosError } from "axios";
+import { serverURL } from "../../hooks/imports";
+import { errorToast, successToast } from "../../components/ui/toast";
 
 function ReAccreditationForm() {
     const navigate = useNavigate();
@@ -28,6 +31,7 @@ function ReAccreditationForm() {
     const [adviserLetter, setAdviserLetter] = useState<File | null>(null);
     const [appendices, setAppendecis] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [memberFiles, setMemberFiles] = useState<File | null>(null);
     
     // Generic utility function for adding items to a list
     const addItem = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, newItem: T): void => {
@@ -97,7 +101,9 @@ function ReAccreditationForm() {
         setFileData(file); // Save the file object in state
     };
 
-    const handleSubmit = () =>{
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
         const data =  {
             orgMembers: [...orgMembers],
             activities: [...planAct],
@@ -110,6 +116,52 @@ function ReAccreditationForm() {
         }
 
         console.log(data)
+
+        // console.log(file) // debug
+        const formData = new FormData();
+        // formData.append("orgName", orgName);
+        // formData.append("type", type);
+    
+        // Append files with the correct field name
+        // if (constitutionsAndByLaws) {
+        //   formData.append("constitution", constitutionsAndByLaws);
+        // }
+        if (adviserLetter) {
+          formData.append("letter", adviserLetter);
+        }
+        if (appendices) {
+          formData.append("appendices", appendices);
+        }
+        // if (memberFiles) {
+        //   formData.append("membersFile", memberFiles);
+        // }
+        // if (officersFile) {
+        //   formData.append("officersFile", officersFile);
+        // }
+        // console.log(officersFile)
+        // Append members and plan activities as JSON strings
+        formData.append("members", JSON.stringify(orgMembers));
+        formData.append("planActivities", JSON.stringify(planAct));
+        formData.append('finance', JSON.stringify(financialReports))
+        formData.append('accomplishment', JSON.stringify(accomplishmentReports))
+        // formData.append("officers", JSON.stringify(officers));
+
+        try {
+            setIsLoading(true);
+            await axios.post(`${serverURL}/reAccreditation`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            });
+      
+            setIsLoading(false);
+            successToast('Success')
+          } catch (error) {
+            if (isAxiosError(error)) {
+              errorToast(`${error.response?.data.message}`);
+            }
+            console.error(error);
+          }
     }
 
     return (
@@ -171,10 +223,10 @@ function ReAccreditationForm() {
                     </Select>
                 </div>
             </div> */}
-            <div>
+
+            {/* <div>
                     <p className="font-bold">1. List Officers, Permanent Contact Numbers & Student Number</p>
                     <Table className="mb-2">
-                        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                         <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
@@ -210,7 +262,7 @@ function ReAccreditationForm() {
                     <AddMembers
                         handleAddMember = {handleAddMember}
                     />
-                </div>
+                </div> */}
 
                 <div>
                     <p className="font-bold">2. List Members, Permanent Contact Numbers & Student Number</p>
