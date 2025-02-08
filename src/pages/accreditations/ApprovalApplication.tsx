@@ -19,6 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../../components/ui/dialog";
 import RequirementsModal from "../../components/modals/RequirementsModal";
+import CalendarModal from "../../components/modals/Calendar";
 
 
 
@@ -43,6 +44,8 @@ function ApprovalApplication() {
         fetchData(); // Call the function
 
     }, []); 
+
+    
 
     if (isLoading) return <p>Loading...</p>;
 
@@ -77,59 +80,6 @@ function ApprovalApplication() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {/* <TableRow>
-                            <TableCell className="font-medium">
-                                Accreditation
-                            </TableCell>
-                            <TableCell>
-                                <h1 className="text-lg font-bold">Computer Science Club</h1>
-                                <p>Trisha Martinez</p>
-                            </TableCell>
-                            <TableCell>
-                                05/16/2025 05:00 PM
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    Approve
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Pending
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Decline
-                                </button>
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    View Requirements
-                                </button>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">
-                                Accreditation
-                            </TableCell>
-                            <TableCell>
-                                <h1 className="text-lg font-bold">Jabolero Group</h1>
-                                <p>Renan</p>
-                            </TableCell>
-                            <TableCell>
-                                05/16/2025 05:00 PM
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    Approve
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Pending
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Decline
-                                </button>
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    View Requirements
-                                </button>
-                            </TableCell>
-                        </TableRow> */}
-
                         {
                             data?.map((item) => (
                             <TableRow>
@@ -148,12 +98,28 @@ function ApprovalApplication() {
                                 })}
                             </TableCell>
                             <TableCell className="text-right">
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    Approve
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Pending
-                                </button>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <button className="text-white bg-primary px-7 py-2 rounded-sm">
+                                            Approve
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <CalendarModal id = {item.accre_id} />
+                                        {/* <RequirementsModal data={item}/> */}
+                                    </DialogContent>
+                                </Dialog>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
+                                            Pending
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        
+                                        {/* <CalendarModal /> */}
+                                    </DialogContent>
+                                </Dialog>
                                 <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
                                     Decline
                                 </button>
@@ -165,21 +131,6 @@ function ApprovalApplication() {
                                     </DialogTrigger>
                                     <DialogContent>
                                         <RequirementsModal data={item}/>
-                                            {/* <div className='bg-white drop-shadow-md p-10 rounded-lg flex flex-col items-center justify-center cursor-pointer'>
-                                            <div className='bg-red-200 p-5 rounded-full'>
-                                                <div>
-                                                    <img 
-                                                        src='./icon_1.png'
-                                                        className='h-20 w-20'
-                                                        alt="icon"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className='flex flex-col text-center items-center justify-center mt-3'>
-                                                <h1 className='text-2xl font-bold mb-2'>Accreditation</h1>
-                                                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio voluptatem animi vel itaque fugit nemo harum doloribus accusantium.</p>
-                                            </div>
-                                            </div> */}
                                     </DialogContent>
                                 </Dialog>
                             </TableCell>

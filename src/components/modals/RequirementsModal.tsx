@@ -20,11 +20,11 @@ export default  function RequirementsModal({data}) {
                     </div>
                 ))}
             </div>
-            Activity{data.planActivities.map((item) =>
+            Activity{data.activities.map((item) =>
                 (
                     <div className="bg-white drop-shadow-md p-5 rounded-lg flex flex-col">
                         <h1><span>Activity: </span>{item.activity}</h1>
-                        <h1><span>Learning Outcome: </span>{item.learningOutcome}</h1>
+                        <h1><span>Learning Outcome: </span>{item.learningOutcomes}</h1>
                         <h1><span>Target Time: </span>{item.targetTime}</h1>
                         <h1><span>Target Group: </span>{item.targetGroup}</h1>
                         <h1><span>Persons Involved: </span>{item.personsInvolved}</h1>
@@ -36,4 +36,3 @@ export default  function RequirementsModal({data}) {
         </div>
     )
 }
-

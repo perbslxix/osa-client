@@ -150,6 +150,8 @@ function AccreditationForm() {
     formData.append("planActivities", JSON.stringify(accreditationData.planActivities));
     formData.append("officers", JSON.stringify(accreditationData.officers));
 
+    console.log(formData)
+
     try {
       setIsLoading(true);
       await axios.post(`${serverURL}/accreditation`, formData, {
@@ -234,7 +236,7 @@ function AccreditationForm() {
           <button
             onClick={handleSubmit}
             className="bg-primary text-white w-36 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!membersFile || !accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices || isLoading}
+            disabled={!accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices || isLoading}
           >
             {
               isLoading ?
