@@ -12,10 +12,10 @@ import {
     FaEdit
 } from "../../hooks/icons";
 
-interface AddMemsProps{
-    handleAddMember: (data:MembersType)=> void;
+interface AddMemsProps {
+    handleAddMember: (data: MembersType) => void;
 }
-interface AddActivityProps{
+interface AddActivityProps {
     handleActivity: (data: ActivityType) => void;
 }
 interface EditMemberProps {
@@ -23,24 +23,24 @@ interface EditMemberProps {
     orgMembers: MembersType[];
     setOrgMemebers: React.Dispatch<React.SetStateAction<MembersType[]>>;
 }
-interface EditActProps{
+interface EditActProps {
     index: number;
     planAct: ActivityType[];
-    setPlanAct:React.Dispatch<React.SetStateAction<ActivityType[]>>
+    setPlanAct: React.Dispatch<React.SetStateAction<ActivityType[]>>
 }
-interface FinancialReportProps{
+interface FinancialReportProps {
     handleFinancialReport: (data: FinancialReportsType) => void;
 }
-interface EditFinancialProps{
-    index:number;
+interface EditFinancialProps {
+    index: number;
     financialReports: FinancialReportsType[];
     setFinancialReports: React.Dispatch<React.SetStateAction<FinancialReportsType[]>>
 }
-interface AccomplishmentReportProps{
+interface AccomplishmentReportProps {
     handleAccomplishmentReport: (data: AccomplishmentReportsType) => void;
 }
-interface EditAccomplishmentProps{
-    index:number;
+interface EditAccomplishmentProps {
+    index: number;
     accomplishmentReports: AccomplishmentReportsType[];
     setAccomplishmentReports: React.Dispatch<React.SetStateAction<AccomplishmentReportsType[]>>
 }
@@ -63,24 +63,24 @@ interface EditAccomplishmentProps{
 //     setBudgetAllocation: React.Dispatch<React.SetStateAction<BudgetAllocationType[]>>
 // }
 
-export const AddMembers: React.FC<AddMemsProps> = ({handleAddMember})=> {
+export const AddMembers: React.FC<AddMemsProps> = ({ handleAddMember }) => {
     const [data, setData] = useState<MembersType>({
-        name:"",
-        position:"",
-        email:"",
-        contactNumber:"",
-        studentNumber:""
+        name: "",
+        position: "",
+        email: "",
+        contactNumber: "",
+        studentNumber: ""
     })
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         handleAddMember(data)
 
         setData({
-            name:"",
-            position:"",
-            email:"",
-            contactNumber:"",
-            studentNumber:""
+            name: "",
+            position: "",
+            email: "",
+            contactNumber: "",
+            studentNumber: ""
         })
     }
     return (
@@ -98,47 +98,56 @@ export const AddMembers: React.FC<AddMemsProps> = ({handleAddMember})=> {
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="name" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="email"
+                        value={data.email}
+                        onChange={(e) => { setData({ ...data, email: e.target.value }) }}
+                        placeholder="Email"
+                        required
+                    />
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="name"
                         value={data.name}
-                        onChange={(e)=>{setData({...data, name:e.target.value})}}
-                        placeholder="Name" 
+                        onChange={(e) => { setData({ ...data, name: e.target.value }) }}
+                        placeholder="Name"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="position" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="position"
                         value={data.position}
-                        onChange={(e)=>{setData({...data, position:e.target.value})}}
-                        placeholder="Position" 
+                        onChange={(e) => { setData({ ...data, position: e.target.value }) }}
+                        placeholder="Position"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="contact" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="contact"
                         value={data.contactNumber}
-                        onChange={(e)=>{setData({...data, contactNumber:e.target.value})}}
-                        placeholder="Contact Number" 
+                        onChange={(e) => { setData({ ...data, contactNumber: e.target.value }) }}
+                        placeholder="Contact Number"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="studentNumber" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="studentNumber"
                         value={data.studentNumber}
-                        onChange={(e)=>{setData({...data, studentNumber:e.target.value})}}
-                        placeholder="Student Number" 
+                        onChange={(e) => { setData({ ...data, studentNumber: e.target.value }) }}
+                        placeholder="Student Number"
                         required
                     />
                 </form>
                 <DialogFooter>
                     <DialogTrigger asChild>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
                             onClick={handleSubmit}
                             disabled={!data.name || !data.position || !data.contactNumber || !data.studentNumber}
@@ -152,50 +161,50 @@ export const AddMembers: React.FC<AddMemsProps> = ({handleAddMember})=> {
     )
 }
 
-export const EditMember: React.FC<EditMemberProps> = ({index, orgMembers, setOrgMemebers})=> {
+export const EditMember: React.FC<EditMemberProps> = ({ index, orgMembers, setOrgMemebers }) => {
 
     const [data, setData] = useState<MembersType>({
-        name:"",
-        position:"",
-        email:"",
-        contactNumber:"",
-        studentNumber:""
+        name: "",
+        position: "",
+        email: "",
+        contactNumber: "",
+        studentNumber: ""
     })
 
     const [uniqueId, setUniqueId] = useState<number>(0);
 
-    const handleSetData = () =>{
+    const handleSetData = () => {
         setUniqueId(index)
         const oldData = orgMembers[index]
 
         setData({
-            name:oldData.name,
-            position:oldData.position,
-            email:oldData.position,
-            contactNumber:oldData.contactNumber,
-            studentNumber:oldData.studentNumber
+            name: oldData.name,
+            position: oldData.position,
+            email: oldData.position,
+            contactNumber: oldData.contactNumber,
+            studentNumber: oldData.studentNumber
         });
     }
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         // handleAddMember(data)
-        orgMembers[uniqueId] = {...orgMembers[uniqueId], ...data}
+        orgMembers[uniqueId] = { ...orgMembers[uniqueId], ...data }
         setOrgMemebers([...orgMembers])
 
         setData({
-            name:"",
-            position:"",
-            email:"",
-            contactNumber:"",
-            studentNumber:""
+            name: "",
+            position: "",
+            email: "",
+            contactNumber: "",
+            studentNumber: ""
         })
     }
-    
+
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <button onClick={handleSetData} className="text-2xl text-primary pe-2">
-                    <FaEdit className="pointer-events-none"/>  
+                    <FaEdit className="pointer-events-none" />
                 </button>
             </DialogTrigger>
             <DialogContent>
@@ -206,47 +215,47 @@ export const EditMember: React.FC<EditMemberProps> = ({index, orgMembers, setOrg
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="name" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="name"
                         value={data.name}
-                        onChange={(e)=>{setData({...data, name:e.target.value})}}
-                        placeholder="Name" 
+                        onChange={(e) => { setData({ ...data, name: e.target.value }) }}
+                        placeholder="Name"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="position" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="position"
                         value={data.position}
-                        onChange={(e)=>{setData({...data, position:e.target.value})}}
-                        placeholder="Position" 
+                        onChange={(e) => { setData({ ...data, position: e.target.value }) }}
+                        placeholder="Position"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="contact" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="contact"
                         value={data.contactNumber}
-                        onChange={(e)=>{setData({...data, contactNumber:e.target.value})}}
-                        placeholder="Contact Number" 
+                        onChange={(e) => { setData({ ...data, contactNumber: e.target.value }) }}
+                        placeholder="Contact Number"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        name="studentNumber" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="studentNumber"
                         value={data.studentNumber}
-                        onChange={(e)=>{setData({...data, studentNumber:e.target.value})}}
-                        placeholder="Student Number" 
+                        onChange={(e) => { setData({ ...data, studentNumber: e.target.value }) }}
+                        placeholder="Student Number"
                         required
                     />
                 </form>
                 <DialogFooter>
                     <DialogTrigger asChild>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
                             onClick={handleSubmit}
                             disabled={!data.name || !data.position || !data.contactNumber || !data.studentNumber}
@@ -260,24 +269,24 @@ export const EditMember: React.FC<EditMemberProps> = ({index, orgMembers, setOrg
     )
 }
 
-export const AddActivity: React.FC<AddActivityProps> = ({handleActivity}) => {
+export const AddActivity: React.FC<AddActivityProps> = ({ handleActivity }) => {
     const [data, setData] = useState<ActivityType>({
-        activity:"",
-        learningOutcome:"",
-        targetTime:"",
-        targetGroup:"",
-        personsInvolved:""
+        activity: "",
+        learningOutcome: "",
+        targetTime: "",
+        targetGroup: "",
+        personsInvolved: ""
     })
 
     const handleSubmit = () => {
         handleActivity(data)
 
         setData({
-            activity:"",
-            learningOutcome:"",
-            targetTime:"",
-            targetGroup:"",
-            personsInvolved:""
+            activity: "",
+            learningOutcome: "",
+            targetTime: "",
+            targetGroup: "",
+            personsInvolved: ""
         })
     }
     return (
@@ -295,53 +304,53 @@ export const AddActivity: React.FC<AddActivityProps> = ({handleActivity}) => {
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
                         value={data.activity}
-                        onChange={(e)=>{setData({...data, activity:e.target.value})}}
-                        placeholder="Activity" 
+                        onChange={(e) => { setData({ ...data, activity: e.target.value }) }}
+                        placeholder="Activity"
                         required
                     />
-                    <textarea 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none max-h-28 min-h-28" 
-                        placeholder="Learning Outcomes" 
+                    <textarea
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none max-h-28 min-h-28"
+                        placeholder="Learning Outcomes"
                         value={data.learningOutcome}
-                        onChange={(e)=>{setData({...data, learningOutcome:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, learningOutcome: e.target.value }) }}
                         required
                     ></textarea>
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Target Time" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Target Time"
                         value={data.targetTime}
-                        onChange={(e)=>{setData({...data, targetTime:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, targetTime: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
                         value={data.targetGroup}
-                        onChange={(e)=>{setData({...data, targetGroup:e.target.value})}}
-                        placeholder="Target Group" 
+                        onChange={(e) => { setData({ ...data, targetGroup: e.target.value }) }}
+                        placeholder="Target Group"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Persons Involved" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Persons Involved"
                         value={data.personsInvolved}
-                        onChange={(e)=>{setData({...data, personsInvolved:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, personsInvolved: e.target.value }) }}
                         required
                     />
                 </form>
                 <DialogFooter>
                     <DialogTrigger asChild>
-                        <button 
-                                type="submit" 
-                                className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
-                                onClick={handleSubmit}
-                                disabled={!data.activity || !data.learningOutcome || !data.targetTime || !data.targetGroup || !data.personsInvolved}
+                        <button
+                            type="submit"
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
+                            onClick={handleSubmit}
+                            disabled={!data.activity || !data.learningOutcome || !data.targetTime || !data.targetGroup || !data.personsInvolved}
                         >
                             Submit
                         </button>
@@ -352,50 +361,50 @@ export const AddActivity: React.FC<AddActivityProps> = ({handleActivity}) => {
     )
 }
 
-export const EditActivity: React.FC<EditActProps> = ({index, planAct, setPlanAct}) => {
+export const EditActivity: React.FC<EditActProps> = ({ index, planAct, setPlanAct }) => {
     const [data, setData] = useState<ActivityType>({
-        activity:"",
-        learningOutcome:"",
-        targetTime:"",
-        targetGroup:"",
-        personsInvolved:""
+        activity: "",
+        learningOutcome: "",
+        targetTime: "",
+        targetGroup: "",
+        personsInvolved: ""
     })
 
     const [uniqueId, setUniqueId] = useState<number>(0);
 
-    const handleSetData = () =>{
+    const handleSetData = () => {
         setUniqueId(index)
         const oldData = planAct[index]
 
         setData({
-            activity:oldData.activity,
-            learningOutcome:oldData.learningOutcome,
-            targetTime:oldData.targetTime,
-            targetGroup:oldData.targetGroup,
-            personsInvolved:oldData.personsInvolved
+            activity: oldData.activity,
+            learningOutcome: oldData.learningOutcome,
+            targetTime: oldData.targetTime,
+            targetGroup: oldData.targetGroup,
+            personsInvolved: oldData.personsInvolved
         });
     }
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
 
-        planAct[uniqueId] = {...planAct[uniqueId], ...data}
+        planAct[uniqueId] = { ...planAct[uniqueId], ...data }
 
         setPlanAct([...planAct])
 
         setData({
-            activity:"",
-            learningOutcome:"",
-            targetTime:"",
-            targetGroup:"",
-            personsInvolved:""
+            activity: "",
+            learningOutcome: "",
+            targetTime: "",
+            targetGroup: "",
+            personsInvolved: ""
         })
     }
-    
+
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <button onClick={handleSetData} className="text-2xl text-primary pe-2">
-                    <FaEdit className="pointer-events-none"/>  
+                    <FaEdit className="pointer-events-none" />
                 </button>
             </DialogTrigger>
             <DialogContent>
@@ -406,53 +415,53 @@ export const EditActivity: React.FC<EditActProps> = ({index, planAct, setPlanAct
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
                         value={data.activity}
-                        onChange={(e)=>{setData({...data, activity:e.target.value})}}
-                        placeholder="Activity" 
+                        onChange={(e) => { setData({ ...data, activity: e.target.value }) }}
+                        placeholder="Activity"
                         required
                     />
-                    <textarea 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none max-h-28 min-h-28" 
-                        placeholder="Learning Outcomes" 
+                    <textarea
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none max-h-28 min-h-28"
+                        placeholder="Learning Outcomes"
                         value={data.learningOutcome}
-                        onChange={(e)=>{setData({...data, learningOutcome:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, learningOutcome: e.target.value }) }}
                         required
                     ></textarea>
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Target Time" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Target Time"
                         value={data.targetTime}
-                        onChange={(e)=>{setData({...data, targetTime:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, targetTime: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
                         value={data.targetGroup}
-                        onChange={(e)=>{setData({...data, targetGroup:e.target.value})}}
-                        placeholder="Target Group" 
+                        onChange={(e) => { setData({ ...data, targetGroup: e.target.value }) }}
+                        placeholder="Target Group"
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Persons Involved" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Persons Involved"
                         value={data.personsInvolved}
-                        onChange={(e)=>{setData({...data, personsInvolved:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, personsInvolved: e.target.value }) }}
                         required
                     />
                 </form>
                 <DialogFooter>
                     <DialogTrigger asChild>
-                        <button 
-                                type="submit" 
-                                className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
-                                onClick={handleSubmit}
-                                disabled={!data.activity || !data.learningOutcome || !data.targetTime || !data.targetGroup || !data.personsInvolved}
+                        <button
+                            type="submit"
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
+                            onClick={handleSubmit}
+                            disabled={!data.activity || !data.learningOutcome || !data.targetTime || !data.targetGroup || !data.personsInvolved}
                         >
                             Submit
                         </button>
@@ -463,11 +472,11 @@ export const EditActivity: React.FC<EditActProps> = ({index, planAct, setPlanAct
     )
 }
 
-export const AddFinancialReports: React.FC<FinancialReportProps> = ({handleFinancialReport}) => {
+export const AddFinancialReports: React.FC<FinancialReportProps> = ({ handleFinancialReport }) => {
     const [data, setData] = useState<FinancialReportsType>({
-        title:"",
-        dateAndTime:"",
-        totalBudget:"",
+        title: "",
+        dateAndTime: "",
+        totalBudget: "",
         source: "",
         particulars: "",
         items: "",
@@ -477,13 +486,13 @@ export const AddFinancialReports: React.FC<FinancialReportProps> = ({handleFinan
         receipt: ""
     })
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         handleFinancialReport(data)
 
         setData({
-            title:"",
-            dateAndTime:"",
-            totalBudget:"",
+            title: "",
+            dateAndTime: "",
+            totalBudget: "",
             source: "",
             particulars: "",
             items: "",
@@ -493,7 +502,7 @@ export const AddFinancialReports: React.FC<FinancialReportProps> = ({handleFinan
             receipt: ""
         })
     }
-    
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -501,7 +510,7 @@ export const AddFinancialReports: React.FC<FinancialReportProps> = ({handleFinan
                     Add Financial Report
                 </button>
             </DialogTrigger>
-            <DialogContent> 
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>
                         <span className="text-primary font-bold">Financial Report</span>
@@ -509,84 +518,84 @@ export const AddFinancialReports: React.FC<FinancialReportProps> = ({handleFinan
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Title" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Title"
                         value={data.title}
-                        onChange={(e)=>{setData({...data, title:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, title: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Date and Time" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Date and Time"
                         value={data.dateAndTime}
-                        onChange={(e)=>{setData({...data, dateAndTime:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, dateAndTime: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Total Budget" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Total Budget"
                         value={data.totalBudget}
-                        onChange={(e)=>{setData({...data, totalBudget:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, totalBudget: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Source" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Source"
                         value={data.source}
-                        onChange={(e)=>{setData({...data, source:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, source: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Particulars" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Particulars"
                         value={data.particulars}
-                        onChange={(e)=>{setData({...data, particulars:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, particulars: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Items" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Items"
                         value={data.items}
-                        onChange={(e)=>{setData({...data, items:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, items: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Quantity" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Quantity"
                         value={data.quantity}
-                        onChange={(e)=>{setData({...data, quantity:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, quantity: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Unit Price" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Unit Price"
                         value={data.unitPrice}
-                        onChange={(e)=>{setData({...data, unitPrice:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, unitPrice: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Amount" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Amount"
                         value={data.amount}
-                        onChange={(e)=>{setData({...data, amount:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, amount: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Receipt" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Receipt"
                         value={data.receipt}
-                        onChange={(e)=>{setData({...data, receipt:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, receipt: e.target.value }) }}
                         required
                     />
                 </form>
@@ -595,7 +604,7 @@ export const AddFinancialReports: React.FC<FinancialReportProps> = ({handleFinan
                         <button
                             type="submit" className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
                             onClick={handleSubmit}
-                            disabled={!data.title || !data.dateAndTime || !data.totalBudget || !data.source || !data.particulars || !data.items || !data.quantity || !data.unitPrice || !data.amount || !data.receipt }
+                            disabled={!data.title || !data.dateAndTime || !data.totalBudget || !data.source || !data.particulars || !data.items || !data.quantity || !data.unitPrice || !data.amount || !data.receipt}
                         >
                             Submit
                         </button>
@@ -606,12 +615,12 @@ export const AddFinancialReports: React.FC<FinancialReportProps> = ({handleFinan
     )
 }
 
-export const EditFinancialReport: React.FC<EditFinancialProps> = ({index, financialReports, setFinancialReports}) => {
-    
+export const EditFinancialReport: React.FC<EditFinancialProps> = ({ index, financialReports, setFinancialReports }) => {
+
     const [data, setData] = useState<FinancialReportsType>({
-        title:"",
-        dateAndTime:"",
-        totalBudget:"",
+        title: "",
+        dateAndTime: "",
+        totalBudget: "",
         source: "",
         particulars: "",
         items: "",
@@ -623,33 +632,33 @@ export const EditFinancialReport: React.FC<EditFinancialProps> = ({index, financ
 
     const [uniqueId, setUniqueId] = useState<number>(0);
 
-    const handleSetData = () =>{
+    const handleSetData = () => {
         setUniqueId(index)
         const oldData = financialReports[index]
 
         setData({
-            title:oldData.title,
-            dateAndTime:oldData.dateAndTime,
-            totalBudget:oldData.totalBudget,
-            source:oldData.source,
-            particulars:oldData.particulars,
-            items:oldData.items,
-            quantity:oldData.quantity,
-            unitPrice:oldData.unitPrice,
-            amount:oldData.amount,
-            receipt:oldData.receipt
+            title: oldData.title,
+            dateAndTime: oldData.dateAndTime,
+            totalBudget: oldData.totalBudget,
+            source: oldData.source,
+            particulars: oldData.particulars,
+            items: oldData.items,
+            quantity: oldData.quantity,
+            unitPrice: oldData.unitPrice,
+            amount: oldData.amount,
+            receipt: oldData.receipt
         });
     }
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         // handleAddMember(data)
-        financialReports[uniqueId] = {...financialReports[uniqueId], ...data}
+        financialReports[uniqueId] = { ...financialReports[uniqueId], ...data }
         setFinancialReports([...financialReports])
 
         setData({
-            title:"",
-            dateAndTime:"",
-            totalBudget:"",
+            title: "",
+            dateAndTime: "",
+            totalBudget: "",
             source: "",
             particulars: "",
             items: "",
@@ -659,15 +668,15 @@ export const EditFinancialReport: React.FC<EditFinancialProps> = ({index, financ
             receipt: ""
         })
     }
-    
+
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <button onClick={handleSetData} className="text-2xl text-primary pe-2">
-                    <FaEdit className="pointer-events-none"/>  
+                    <FaEdit className="pointer-events-none" />
                 </button>
             </DialogTrigger>
-            <DialogContent> 
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>
                         <span className="text-primary font-bold">Financial Report</span>
@@ -675,91 +684,91 @@ export const EditFinancialReport: React.FC<EditFinancialProps> = ({index, financ
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Title" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Title"
                         value={data.title}
-                        onChange={(e)=>{setData({...data, title:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, title: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Date and Time" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Date and Time"
                         value={data.dateAndTime}
-                        onChange={(e)=>{setData({...data, dateAndTime:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, dateAndTime: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Total Budget" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Total Budget"
                         value={data.totalBudget}
-                        onChange={(e)=>{setData({...data, totalBudget:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, totalBudget: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Source" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Source"
                         value={data.source}
-                        onChange={(e)=>{setData({...data, source:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, source: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Particulars" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Particulars"
                         value={data.particulars}
-                        onChange={(e)=>{setData({...data, particulars:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, particulars: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Items" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Items"
                         value={data.items}
-                        onChange={(e)=>{setData({...data, items:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, items: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Quantity" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Quantity"
                         value={data.quantity}
-                        onChange={(e)=>{setData({...data, quantity:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, quantity: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Unit Price" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Unit Price"
                         value={data.unitPrice}
-                        onChange={(e)=>{setData({...data, unitPrice:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, unitPrice: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Amount" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Amount"
                         value={data.amount}
-                        onChange={(e)=>{setData({...data, amount:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, amount: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Receipt" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Receipt"
                         value={data.receipt}
-                        onChange={(e)=>{setData({...data, receipt:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, receipt: e.target.value }) }}
                         required
                     />
                 </form>
                 <DialogFooter>
                     <DialogTrigger asChild>
                         <button
-                            type="submit" 
+                            type="submit"
                             className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
                             onClick={handleSubmit}
                         >
@@ -772,29 +781,29 @@ export const EditFinancialReport: React.FC<EditFinancialProps> = ({index, financ
     )
 }
 
-export const AddAccomplishmentReports: React.FC<AccomplishmentReportProps> = ({handleAccomplishmentReport}) => {
+export const AddAccomplishmentReports: React.FC<AccomplishmentReportProps> = ({ handleAccomplishmentReport }) => {
     const [data, setData] = useState<AccomplishmentReportsType>({
-        title:"",
-        date:"",
-        venue:"",
+        title: "",
+        date: "",
+        venue: "",
         participants: "",
         speaker: "",
         body: ""
     })
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         handleAccomplishmentReport(data)
 
         setData({
-            title:"",
-            date:"",
-            venue:"",
+            title: "",
+            date: "",
+            venue: "",
             participants: "",
             speaker: "",
             body: ""
         })
     }
-    
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -802,7 +811,7 @@ export const AddAccomplishmentReports: React.FC<AccomplishmentReportProps> = ({h
                     Add Accomplishment Report
                 </button>
             </DialogTrigger>
-            <DialogContent> 
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>
                         <span className="text-primary font-bold">Accomplishment Report</span>
@@ -810,51 +819,51 @@ export const AddAccomplishmentReports: React.FC<AccomplishmentReportProps> = ({h
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Title" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Title"
                         value={data.title}
-                        onChange={(e)=>{setData({...data, title:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, title: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Date" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Date"
                         value={data.date}
-                        onChange={(e)=>{setData({...data, date:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, date: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Venue" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Venue"
                         value={data.venue}
-                        onChange={(e)=>{setData({...data, venue:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, venue: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Participants" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Participants"
                         value={data.participants}
-                        onChange={(e)=>{setData({...data, participants:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, participants: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Speaker" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Speaker"
                         value={data.speaker}
-                        onChange={(e)=>{setData({...data, speaker:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, speaker: e.target.value }) }}
                         required
                     />
-                    <textarea 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none max-h-28 min-h-28" 
-                        placeholder="Body" 
+                    <textarea
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none max-h-28 min-h-28"
+                        placeholder="Body"
                         value={data.body}
-                        onChange={(e)=>{setData({...data, body:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, body: e.target.value }) }}
                         required
                     />
                 </form>
@@ -863,7 +872,7 @@ export const AddAccomplishmentReports: React.FC<AccomplishmentReportProps> = ({h
                         <button
                             type="submit" className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
                             onClick={handleSubmit}
-                            disabled={!data.title || !data.date || !data.venue || !data.participants || !data.speaker || !data.body }
+                            disabled={!data.title || !data.date || !data.venue || !data.participants || !data.speaker || !data.body}
                         >
                             Submit
                         </button>
@@ -874,12 +883,12 @@ export const AddAccomplishmentReports: React.FC<AccomplishmentReportProps> = ({h
     )
 }
 
-export const EditAccomplishmentReport: React.FC<EditAccomplishmentProps> = ({index, accomplishmentReports, setAccomplishmentReports}) => {
-    
+export const EditAccomplishmentReport: React.FC<EditAccomplishmentProps> = ({ index, accomplishmentReports, setAccomplishmentReports }) => {
+
     const [data, setData] = useState<AccomplishmentReportsType>({
-        title:"",
-        date:"",
-        venue:"",
+        title: "",
+        date: "",
+        venue: "",
         participants: "",
         speaker: "",
         body: ""
@@ -887,43 +896,43 @@ export const EditAccomplishmentReport: React.FC<EditAccomplishmentProps> = ({ind
 
     const [uniqueId, setUniqueId] = useState<number>(0);
 
-    const handleSetData = () =>{
+    const handleSetData = () => {
         setUniqueId(index)
         const oldData = accomplishmentReports[index]
 
         setData({
-            title:oldData.title,
-            date:oldData.date,
-            venue:oldData.venue,
-            participants:oldData.participants,
-            speaker:oldData.speaker,
-            body:oldData.body
+            title: oldData.title,
+            date: oldData.date,
+            venue: oldData.venue,
+            participants: oldData.participants,
+            speaker: oldData.speaker,
+            body: oldData.body
         });
     }
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         // handleAddMember(data)
-        accomplishmentReports[uniqueId] = {...accomplishmentReports[uniqueId], ...data}
+        accomplishmentReports[uniqueId] = { ...accomplishmentReports[uniqueId], ...data }
         setAccomplishmentReports([...accomplishmentReports])
 
         setData({
-            title:"",
-            date:"",
-            venue:"",
+            title: "",
+            date: "",
+            venue: "",
             participants: "",
             speaker: "",
             body: ""
         })
     }
-    
+
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <button onClick={handleSetData} className="text-2xl text-primary pe-2">
-                    <FaEdit className="pointer-events-none"/>  
+                    <FaEdit className="pointer-events-none" />
                 </button>
             </DialogTrigger>
-            <DialogContent> 
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>
                         <span className="text-primary font-bold">Financial Report</span>
@@ -931,59 +940,59 @@ export const EditAccomplishmentReport: React.FC<EditAccomplishmentProps> = ({ind
                     <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-5">
-                <input 
-                        type="text" 
-                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Title" 
+                    <input
+                        type="text"
+                        className="col-span-2 border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Title"
                         value={data.title}
-                        onChange={(e)=>{setData({...data, title:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, title: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Date and Time" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Date and Time"
                         value={data.date}
-                        onChange={(e)=>{setData({...data, date:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, date: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Total Budget" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Total Budget"
                         value={data.venue}
-                        onChange={(e)=>{setData({...data, venue:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, venue: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Source" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Source"
                         value={data.participants}
-                        onChange={(e)=>{setData({...data, participants:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, participants: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Particulars" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Particulars"
                         value={data.speaker}
-                        onChange={(e)=>{setData({...data, speaker:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, speaker: e.target.value }) }}
                         required
                     />
-                    <input 
-                        type="text" 
-                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none" 
-                        placeholder="Items" 
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        placeholder="Items"
                         value={data.body}
-                        onChange={(e)=>{setData({...data, body:e.target.value})}}
+                        onChange={(e) => { setData({ ...data, body: e.target.value }) }}
                         required
                     />
                 </form>
                 <DialogFooter>
                     <DialogTrigger asChild>
                         <button
-                            type="submit" 
+                            type="submit"
                             className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md"
                             onClick={handleSubmit}
                         >

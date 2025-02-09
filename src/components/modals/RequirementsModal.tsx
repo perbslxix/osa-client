@@ -1,7 +1,84 @@
-
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogFooter } from "../ui/dialog"
 
 export default  function RequirementsModal({data}) {
     return (
+        <>
+        {/* <Dialog> */}
+            {/* <DialogTrigger asChild>
+                <button className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md">
+                    Add members
+                </button>
+            </DialogTrigger> */}
+            {/* <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>
+                        <span className="text-primary font-bold">Members</span>
+                    </DialogTitle>
+                    <div className="w-full border-primary border-[1px] border-x-0 border-b-0"></div>
+                </DialogHeader>
+                <form className="grid grid-cols-2 gap-5">
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="email"
+                        value={data.email}
+                        // onChange={(e) => { setData({ ...data, email: e.target.value }) }}
+                        placeholder="Email"
+                        required
+                    />
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="name"
+                        value={data.name}
+                        // onChange={(e) => { setData({ ...data, name: e.target.value }) }}
+                        placeholder="Name"
+                        required
+                    />
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="position"
+                        value={data.position}
+                        // onChange={(e) => { setData({ ...data, position: e.target.value }) }}
+                        placeholder="Position"
+                        required
+                    />
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="contact"
+                        // value={data.contactNumber}
+                        // onChange={(e) => { setData({ ...data, contactNumber: e.target.value }) }}
+                        placeholder="Contact Number"
+                        required
+                    />
+                    <input
+                        type="text"
+                        className="border-gray-200 border-[1px] p-2 rounded-md outline-none"
+                        name="studentNumber"
+                        value={data.studentNumber}
+                        // onChange={(e) => { setData({ ...data, studentNumber: e.target.value }) }}
+                        placeholder="Student Number"
+                        required
+                    />
+                </form>
+                <DialogFooter>
+                    <DialogTrigger asChild>
+                        <button
+                            type="submit"
+                            className="flex items-center justify-center gap-2 px-5 py-1 rounded-md bg-primary text-white drop-shadow-md disabled:cursor-not-allowed"
+                            // onClick={handleSubmit}
+                            disabled={!data.name || !data.position || !data.contactNumber || !data.studentNumber}
+                        >
+                            Submit
+                        </button>
+                    </DialogTrigger>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog> */}
+
+        
         <div className="h-[800px] overflow-auto">  
             <div className='flex flex-col text-center items-center justify-center mt-3'>
                         <div className='text-2xl font-bold mb-2'>Accreditation Form</div> 
@@ -34,5 +111,7 @@ export default  function RequirementsModal({data}) {
             <h1><span>Letter: </span>{data.letter}</h1>
             <h1><span>APpendices: </span>{data.appendices}</h1>
         </div>
+        </>
+        
     )
 }

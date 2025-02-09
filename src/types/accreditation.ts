@@ -41,21 +41,24 @@
     organizationName: string;
     type: string;
     members: Array<MembersType>;
-    officers: Array<MembersType>
     planActivities: Array<ActivityType>;
     letter: string;
     appendices: string;
     membersFile: string;
-    officersFile: string;
+    planFile: string; 
   }
 
   export interface reAccreditationType {
+    // organizationName: string;
+    // type: string; 
     members: Array<MembersType>;
     accomplishmentReports: Array<AccomplishmentReportsType>;
     financialReports: Array<FinancialReportsType>;
     planActivities: Array<ActivityType>;
     letter: string; 
     appendices: string; 
+    membersFile: string;
+    plansFile: string; 
   }
   
   // DONT TOUCH PLS
