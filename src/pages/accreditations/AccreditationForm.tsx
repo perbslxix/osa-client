@@ -152,7 +152,7 @@ function AccreditationForm() {
         planFile: ""
       })
       setIsLoading(false);
-      successToast('Success')
+      successToast('Accreditation submitted successfully!')
     } catch (error) {
       if (isAxiosError(error)) {
         errorToast(`${error.response?.data.message}`);
