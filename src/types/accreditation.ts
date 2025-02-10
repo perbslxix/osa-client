@@ -49,8 +49,8 @@
   }
 
   export interface reAccreditationType {
-    // organizationName: string;
-    // type: string; 
+    organizationName: string;
+    type: string; 
     members: Array<MembersType>;
     accomplishmentReports: Array<AccomplishmentReportsType>;
     financialReports: Array<FinancialReportsType>;

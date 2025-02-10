@@ -10,9 +10,31 @@ import {
     FaEdit,
     FaTrash
 } from "../../hooks/icons";
-import { AddActivity, AddFinancialReports, AddMembers, EditActivity, EditFinancialReport, EditMember, AddAccomplishmentReports, EditAccomplishmentReport } from "../../components/modals/ReAccreditationModal";
+import { 
+    Select, 
+    SelectTrigger, 
+    SelectValue, 
+    SelectContent, 
+    SelectGroup, 
+    SelectItem 
+} from "../../components/ui/select";
 import { useRef, useState } from "react";
-import { AccomplishmentReportsType, ActivityType, FinancialReportsType, MembersType, reAccreditationType, } from "../../types/accreditation";
+import { 
+    AddActivity, 
+    AddFinancialReports, 
+    AddMembers, 
+    EditActivity, 
+    EditFinancialReport, 
+    EditMember, 
+    AddAccomplishmentReports, 
+    EditAccomplishmentReport 
+} from "../../components/modals/ReAccreditationModal";
+import { 
+    AccomplishmentReportsType, 
+    ActivityType, 
+    FinancialReportsType, 
+    MembersType, 
+} from "../../types/accreditation";
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios, { isAxiosError } from "axios";
@@ -23,18 +45,46 @@ import { errorToast, successToast } from "../../components/ui/toast";
 function ReAccreditationForm() {
     const navigate = useNavigate();
 
-    // const [organizationName, setOrganizationName] = useState<reAccreditationType>();
-    // const [type, setType] =  useState<reAccreditationType>();
+    const [reAccreditationData, setReAccreditationData] = useState({
+        organizationName: "",
+        type: "",
+    });
+
     const [orgMembers, setOrgMemebers] = useState<MembersType[]>([]);
     const [planAct, setPlanAct] = useState<ActivityType[]>([]);
     const [financialReports, setFinancialReports] = useState<FinancialReportsType[]>([]);
     const [accomplishmentReports, setAccomplishmentReports] = useState<AccomplishmentReportsType[]>([]);
     // const [sourceOfFunds, setSourceOfFunds] = useState<SourceOfFundsType[]>([]);
     // const [budgetAllocation, setBudgetAllocation] = useState<BudgetAllocationType[]>([]);
+
+    // File uploads
     const [adviserLetter, setAdviserLetter] = useState<File | null>(null);
     const [appendices, setAppendecis] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    // CSV File
     // const [membersFile, setMemberFile] = useState<File | null>(null);
+
+    const [membersFile, setMembersFile] = useState<File | null>(null)
+    const [fileName, setFileName] = useState<String>("No file Selected")
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const [planFile, setPlanFile] = useState<File | null>(null)
+    const [fileName1, setFileName1] = useState<String>("No file Selected")
+    const inputRef1 = useRef<HTMLInputElement>(null)
+
+    const [financeFile, setFinanceFile] = useState<File | null>(null)
+    const [fileName2, setFileName2] = useState<String>("No file Selected")
+    const inputRef2 = useRef<HTMLInputElement>(null)
+
+    const [accomplishmentFile, setAccomplishmentFile] = useState<File | null>(null)
+    const [fileName3, setFileName3] = useState<String>("No file Selected")
+    const inputRef3 = useRef<HTMLInputElement>(null)
+
+    const handleUploadClick = () => inputRef.current?.click();
+    const handleUploadClick1 = () => inputRef1.current?.click();
+    const handleUploadClick2 = () => inputRef2.current?.click();
+    const handleUploadClick3 = () => inputRef3.current?.click();
 
     // Generic utility function for adding items to a list
     const addItem = <T,>(list: T[], setList: React.Dispatch<React.SetStateAction<T[]>>, newItem: T): void => {
@@ -104,97 +154,6 @@ function ReAccreditationForm() {
         setFileData(file); // Save the file object in state
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const data = {
-            orgMembers: [...orgMembers],
-            activities: [...planAct],
-            financialReports: [...financialReports],
-            accomplishmentReports: [...accomplishmentReports],
-            // sourceOfFunds: [...sourceOfFunds],
-            // budgetAllocation: [...budgetAllocation],
-            adviserLetter,
-            appendices
-        }
-
-        const formData = new FormData();
-        // formData.append("orgName", orgName);
-        // formData.append("type", type);
-
-        // Append files with the correct field name
-        // if (constitutionsAndByLaws) {
-        //   formData.append("constitution", constitutionsAndByLaws);
-        // }
-        if (adviserLetter) {
-            formData.append("letter", adviserLetter);
-        }
-        if (appendices) {
-            formData.append("appendices", appendices);
-        }
-        if (membersFile) {
-            formData.append("membersFile", membersFile);
-        }
-        if (planFile) {
-            formData.append("plansFile", planFile);
-        }
-        // Append members and plan activities as JSON strings
-        formData.append("members", JSON.stringify(orgMembers));
-        formData.append("planActivities", JSON.stringify(planAct));
-        formData.append('finance', JSON.stringify(financialReports))
-        formData.append('accomplishment', JSON.stringify(accomplishmentReports))
-
-        try {
-            setIsLoading(true);
-            await axios.post(`${serverURL}/reAccreditation`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            setIsLoading(false);
-            successToast('Success')
-        } catch (error) {
-            if (isAxiosError(error)) {
-                errorToast(`${error.response?.data.message}`);
-            }
-            console.error(error);
-        }
-    }
-
-    const [membersFile, setMembersFile] = useState<File | null>(null)
-    const [fileName, setFileName] = useState<String>("No file Selected")
-    const inputRef = useRef<HTMLInputElement>(null)
-
-    const [planFile, setPlanFile] = useState<File | null>(null)
-    const [fileName1, setFileName1] = useState<String>("No file Selected")
-    const inputRef1 = useRef<HTMLInputElement>(null)
-
-    const [financeFile, setFinanceFile] = useState<File | null>(null)
-    const [fileName2, setFileName2] = useState<String>("No file Selected")
-    const inputRef2 = useRef<HTMLInputElement>(null)
-
-    const [accomplishmentFile, setAccomplishmentFile] = useState<File | null>(null)
-    const [fileName3, setFileName3] = useState<String>("No file Selected")
-    const inputRef3 = useRef<HTMLInputElement>(null)
-
-    const handleUploadClick = () => {
-        inputRef.current?.click()
-    }
-
-    const handleUploadClick1 = () => {
-        inputRef1.current?.click()
-    }
-
-    const handleUploadClick2 = () => {
-        inputRef2.current?.click()
-    }
-
-    const handleUploadClick3 = () => {
-        inputRef3.current?.click()
-    }
-
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0]
         if (selectedFile) {
@@ -239,12 +198,56 @@ function ReAccreditationForm() {
         }
     }
 
+    // Fom submit handler
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // const data = {
+        //     orgMembers: [...orgMembers],
+        //     activities: [...planAct],
+        //     financialReports: [...financialReports],
+        //     accomplishmentReports: [...accomplishmentReports],
+        //     // sourceOfFunds: [...sourceOfFunds],
+        //     // budgetAllocation: [...budgetAllocation],
+        //     adviserLetter,
+        //     appendices
+        // }
+
+        const formData = new FormData();
+        formData.append("orgName", reAccreditationData.organizationName);
+        formData.append("type", reAccreditationData.type);
+
+        // Append files with the correct field name
+        if (adviserLetter) formData.append("letter", adviserLetter);
+        if (appendices) formData.append("appendices", appendices);
+        if (membersFile) formData.append("membersFile", membersFile);
+        if (planFile) formData.append("plansFile", planFile);
+
+        // Append JSON data
+        formData.append("members", JSON.stringify(orgMembers));
+        formData.append("planActivities", JSON.stringify(planAct));
+        formData.append('finance', JSON.stringify(financialReports))
+        formData.append('accomplishment', JSON.stringify(accomplishmentReports))
+
+        try {
+            setIsLoading(true);
+            await axios.post(`${serverURL}/reAccreditation`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            setIsLoading(false);
+            successToast('Re-Accreditation submitted successfully!');
+        } catch (error) {
+            setIsLoading(false);
+            if (isAxiosError(error)) {
+                errorToast(`${error.response?.data.message}`);
+            }
+            console.error(error);
+        }
+    }
+
     return (
         <section>
-            <Toaster
-                position="top-right"
-                reverseOrder={false}
-            />
+            <Toaster position="top-right" reverseOrder={false} />
             <div className="flex items-center justify-between border-x-0 border-t-0 border-b-2 border-primary pb-3">
                 <div>
                     <h1 className="text-xl font-semibold">University of Nueva Caceres</h1>
@@ -257,48 +260,40 @@ function ReAccreditationForm() {
                         className="bg-primary text-white w-36 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={orgMembers.length <= 0 || planAct.length <= 0 || financialReports.length <= 0 || !adviserLetter || !appendices || isLoading}
                     >
-                        {
-                            isLoading ?
-                                ('Loading...') : ('Submit')
-                        }
+                        {isLoading ? ('Loading...') : ('Submit')}
                     </button>
                 </div>
             </div>
 
-            {/* add here */}
 
             <form className="mt-5 mb-20 flex flex-col gap-10">
-                {/* <div className="grid grid-cols-3 gap-5">
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="oraganizationName" className="font-bold">
-                    Organization Name
-                    </label>
-                    <input
-                    name="oraganizationName"
-                    type="text"
-                    className="border-[1px] border-gray-200 rounded-sm p-[0.40rem] outline-none"
-                    placeholder="Organization Name"
-                    value={accreditationData.organizationName}
-                    onChange={(e) => setAccreditationData({ ...accreditationData, organizationName: e.target.value })}
-                    />
+                <div className="grid grid-cols-3 gap-5">
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="oraganizationName" className="font-bold"> Organization Name</label>
+                        <input
+                            name="oraganizationName"
+                            type="text"
+                            className="border-[1px] border-gray-200 rounded-sm p-[0.40rem] outline-none"
+                            placeholder="Enter Organization Name..."
+                            value={reAccreditationData.organizationName}
+                            onChange={(e) => setReAccreditationData({ ...reAccreditationData, organizationName: e.target.value })}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="type" className="font-bold">Type</label>
+                        <Select value={reAccreditationData.type} onValueChange={(e) => { setReAccreditationData({ ...reAccreditationData, type: e }) }}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Acads or Non-Acads " />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem value="acads">Acads</SelectItem>
+                                    <SelectItem value="non-acads">Non-Acads</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="type" className="font-bold">
-                    Type
-                    </label>
-                    <Select value={accreditationData.type} onValueChange={(e) => { setAccreditationData({ ...accreditationData, type: e }) }}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Acads or Non-Acads " />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                        <SelectItem value="acads">Acads</SelectItem>
-                        <SelectItem value="non-acads">Non-Acads</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                    </Select>
-                </div>
-            </div> */}
 
 
                 <div>
