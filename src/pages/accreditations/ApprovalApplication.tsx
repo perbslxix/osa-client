@@ -31,6 +31,10 @@ function ApprovalApplication() {
         fetchData();
     }, [selectedType]); // Fetch data when filter changes
 
+    useEffect(() => {
+        console.log("Fetched Data:", data);
+    }, [data]);
+
     // Fetch data from backend
     const fetchData = async () => {
         setLoading(true);
@@ -58,11 +62,24 @@ function ApprovalApplication() {
     };
 
     // Delete application
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: number | string) => {
+
+        console.log("Delete button clicked for ID:", id, "Type:", selectedType);
+
+        if (!id) {
+            errorToast("Invalid accreditation ID.");
+            console.error("Error: ID is undefined or invalid.");
+            return;
+        }
+
+        console.log("Attempting to delete application with ID:", id, "Type:", selectedType);
+
         try {
-            await axios.delete(`${serverURL}/accreditation/${id}?type=${selectedType}`);
+            const response = await axios.delete(`${serverURL}/accreditation/${id}?type=${selectedType}`);
+            console.log("Delete Response:", response.data);
+
             successToast("Application removed.");
-            setData((prevData) => prevData.filter((item) => item.accre_id !== id));
+            setData((prevData) => prevData.filter((item) => item.accreditation_id !== id));
         } catch (error) {
             console.error("Error deleting accreditation:", error);
             errorToast("Failed to remove application.");
@@ -111,7 +128,7 @@ function ApprovalApplication() {
                         </TableHeader>
                         <TableBody>
                             {data.map((item) => (
-                                <TableRow key={item.accre_id}>
+                                <TableRow key={item.accreditation_id || item.accre_id || item.id}>
                                     {/* Application Type */}
                                     <TableCell className="font-medium">
                                         {selectedType === "accreditation" ? "Accreditation" : "Re-Accreditation"}
@@ -157,7 +174,11 @@ function ApprovalApplication() {
                                         {/* Delete Button (Fixed) */}
                                         <button
                                             className="text-white bg-red-500 px-5 py-2 text-sm rounded-md hover:bg-red-600 transition"
-                                            onClick={() => handleDelete(item.accre_id)}
+                                            
+                                            onClick={() => {
+                                                console.log("Delete Button Clicked - ID:", item.accreditation_id || item.accre_id || item.id);
+                                                handleDelete(item.accreditation_id)
+                                            }}
                                         >
                                             Decline
                                         </button>
