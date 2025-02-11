@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
 import {
     Select,
     SelectContent,
@@ -15,183 +16,193 @@ import {
     TableHeader,
     TableRow,
 } from "../../components/ui/table";
-
-import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../../components/ui/dialog";
 import RequirementsModal from "../../components/modals/RequirementsModal";
-
-
+import CalendarModal from "../../components/modals/Calendar";
+import { errorToast, successToast } from "../../components/ui/toast";
+import { serverURL } from "../../hooks/imports";
 
 function ApprovalApplication() {
-
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<any[]>([]);
     const [isLoading, setLoading] = useState(false);
+    const [selectedType, setSelectedType] = useState<string>("accreditation");
 
     useEffect(() => {
+        fetchData();
+    }, [selectedType]); // Fetch data when filter changes
+
+    useEffect(() => {
+        console.log("Fetched Data:", data);
+    }, [data]);
+
+    // Fetch data from backend
+    const fetchData = async () => {
         setLoading(true);
+        try {
+            const response = await axios.get(`${serverURL}/accreditation?type=${selectedType}`);
+            setData(response.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            errorToast("Failed to load data.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        const fetchData = async () => {
-            try {
-                const { data } = await axios.get("http://localhost:8800/accreditation");
-                setData(data); // ✅ Correctly setting data
-            } catch (e) {
-                console.log(e); // Handle errors
-            } finally {
-                setLoading(false); // Stop loading
-            }
-        };
-        fetchData(); // Call the function
+    // Update application status (Approve/Pending)
+    const handleUpdateStatus = async (id: number, status: string) => {
+        try {
+            await axios.put(`${serverURL}/accreditation/${id}`, { status });
+            successToast(`Application marked as ${status}`);
+            fetchData();
+        } catch (error) {
+            console.error("Error updating accreditation:", error);
+            errorToast("Failed to update status.");
+        }
+    };
 
-    }, []); 
+    // Delete application
+    const handleDelete = async (id: number | string) => {
 
-    if (isLoading) return <p>Loading...</p>;
+        console.log("Delete button clicked for ID:", id, "Type:", selectedType);
+
+        if (!id) {
+            errorToast("Invalid accreditation ID.");
+            console.error("Error: ID is undefined or invalid.");
+            return;
+        }
+
+        console.log("Attempting to delete application with ID:", id, "Type:", selectedType);
+
+        try {
+            const response = await axios.delete(`${serverURL}/accreditation/${id}?type=${selectedType}`);
+            console.log("Delete Response:", response.data);
+
+            successToast("Application removed.");
+            setData((prevData) => prevData.filter((item) => item.accreditation_id !== id));
+        } catch (error) {
+            console.error("Error deleting accreditation:", error);
+            errorToast("Failed to remove application.");
+        }
+    };
+
+    if (isLoading) return <p className="text-center py-10">Loading...</p>;
 
     return (
-        <section className='px-20 py-10'>
-            <div className="flex items-center justify-between border-x-0 border-t-0 border-b-2 border-primary pb-3">
-                <h1 className="text-primary font-bold text-4xl">Applications for Approval</h1>
+        <section className="px-5 md:px-10 lg:px-20 py-10">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-primary pb-3">
+                <h1 className="text-primary font-bold text-3xl md:text-4xl text-center md:text-left">
+                    Applications for Approval
+                </h1>
             </div>
-            <div className="flex flex-row items-center gap-5 mt-5">
-                <label htmlFor="type">
-                    Sort by
-                </label>
-                <Select>
-                    <SelectTrigger className="w-[180px]">
+
+            {/* Sorting Section */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3 mt-5">
+                <label className="text-sm md:text-base font-medium">Sort by</label>
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                    <SelectTrigger className="w-full md:w-[200px]">
                         <SelectValue placeholder="Application type" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                        <SelectItem value="acads">Accreditation</SelectItem>
-                        <SelectItem value="non-acads">Re-Accreditation</SelectItem>
+                            <SelectItem value="accreditation">Accreditation</SelectItem>
+                            <SelectItem value="re-accreditation">Re-Accreditation</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>
             </div>
-            <div className="mt-5">
-                <Table className="mb-2">
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead>Application type</TableHead>
-                        <TableHead>Organization</TableHead>
-                        <TableHead>Submitted</TableHead>
-                    </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {/* <TableRow>
-                            <TableCell className="font-medium">
-                                Accreditation
-                            </TableCell>
-                            <TableCell>
-                                <h1 className="text-lg font-bold">Computer Science Club</h1>
-                                <p>Trisha Martinez</p>
-                            </TableCell>
-                            <TableCell>
-                                05/16/2025 05:00 PM
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    Approve
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Pending
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Decline
-                                </button>
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    View Requirements
-                                </button>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">
-                                Accreditation
-                            </TableCell>
-                            <TableCell>
-                                <h1 className="text-lg font-bold">Jabolero Group</h1>
-                                <p>Renan</p>
-                            </TableCell>
-                            <TableCell>
-                                05/16/2025 05:00 PM
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    Approve
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Pending
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Decline
-                                </button>
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    View Requirements
-                                </button>
-                            </TableCell>
-                        </TableRow> */}
 
-                        {
-                            data?.map((item) => (
+            {/* Table Section */}
+            <div className="mt-5 overflow-x-auto">
+                {data.length === 0 ? (
+                    <p className="text-center text-gray-500">No applications found.</p>
+                ) : (
+                    <Table className="w-full min-w-[600px]">
+                        <TableHeader>
                             <TableRow>
-                            <TableCell className="font-medium">
-                                Accreditation
-                            </TableCell>
-                            <TableCell>
-                                <h1 className="text-lg font-bold">{item.orgName}</h1>
-                                <p>{item?.members[0]?.name}</p>
-                            </TableCell>
-                            <TableCell>
-                                {new Date(item.submitted_at).toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                })}
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                    Approve
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Pending
-                                </button>
-                                <button className="text-white mx-2 bg-secondary px-7 py-2 rounded-sm">
-                                    Decline
-                                </button>
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <button className="text-white bg-primary px-7 py-2 rounded-sm">
-                                            View Requirements
-                                        </button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <RequirementsModal data={item}/>
-                                            {/* <div className='bg-white drop-shadow-md p-10 rounded-lg flex flex-col items-center justify-center cursor-pointer'>
-                                            <div className='bg-red-200 p-5 rounded-full'>
-                                                <div>
-                                                    <img 
-                                                        src='./icon_1.png'
-                                                        className='h-20 w-20'
-                                                        alt="icon"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className='flex flex-col text-center items-center justify-center mt-3'>
-                                                <h1 className='text-2xl font-bold mb-2'>Accreditation</h1>
-                                                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio voluptatem animi vel itaque fugit nemo harum doloribus accusantium.</p>
-                                            </div>
-                                            </div> */}
-                                    </DialogContent>
-                                </Dialog>
-                            </TableCell>
+                                <TableHead>Application Type</TableHead>
+                                <TableHead>Organization</TableHead>
+                                <TableHead>Submitted</TableHead>
                             </TableRow>
-                            ))
-                        }
+                        </TableHeader>
+                        <TableBody>
+                            {data.map((item) => (
+                                <TableRow key={item.accreditation_id || item.accre_id || item.id}>
+                                    {/* Application Type */}
+                                    <TableCell className="font-medium">
+                                        {selectedType === "accreditation" ? "Accreditation" : "Re-Accreditation"}
+                                    </TableCell>
 
-                    </TableBody>
-                </Table>
+                                    {/* Organization & President */}
+                                    <TableCell>
+                                        <h1 className="text-lg font-bold">{item.org_name}</h1>
+                                        <p className="text-sm text-gray-600">President: {item.president || "N/A"}</p>
+                                    </TableCell>
+
+                                    {/* Submission Date */}
+                                    <TableCell>
+                                        {new Date(item.submitted_at).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                        })}
+                                    </TableCell>
+
+                                    {/* Actions */}
+                                    <TableCell className="flex flex-wrap justify-end gap-2">
+                                        {/* Approve Button */}
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <button className="text-white bg-primary px-5 py-2 text-sm rounded-md hover:bg-primary/80 transition">
+                                                    Approve
+                                                </button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <CalendarModal id={item.accre_id} />
+                                            </DialogContent>
+                                        </Dialog>
+
+                                        {/* Pending Button */}
+                                        <button
+                                            className="text-white bg-yellow-500 px-5 py-2 text-sm rounded-md hover:bg-yellow-600 transition"
+                                            onClick={() => handleUpdateStatus(item.accre_id, "pending")}
+                                        >
+                                            Pending
+                                        </button>
+
+                                        {/* Delete Button (Fixed) */}
+                                        <button
+                                            className="text-white bg-red-500 px-5 py-2 text-sm rounded-md hover:bg-red-600 transition"
+                                            
+                                            onClick={() => {
+                                                console.log("Delete Button Clicked - ID:", item.accreditation_id || item.accre_id || item.id);
+                                                handleDelete(item.accreditation_id)
+                                            }}
+                                        >
+                                            Decline
+                                        </button>
+
+                                        {/* View Requirements Button */}
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <button className="text-white bg-primary px-5 py-2 text-sm rounded-md hover:bg-primary/80 transition">
+                                                    View Requirements
+                                                </button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <RequirementsModal data={item} type={selectedType} />
+                                            </DialogContent>
+                                        </Dialog>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                )}
             </div>
         </section>
-    )
+    );
 }
 
-export default ApprovalApplication
+export default ApprovalApplication;

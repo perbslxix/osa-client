@@ -33,9 +33,8 @@ function AccreditationForm() {
     type: "",
     members: [],
     membersFile: "",
-    officers: [],
-    officersFile: "",
     planActivities: [],
+    planFile: "",
     letter: "",
     appendices: ""
   });
@@ -58,22 +57,6 @@ function AccreditationForm() {
       ...accreditationData,
       members: [
         ...accreditationData.members,
-        {
-          email: data.email,
-          name: data.name,
-          position: data.position,
-          contactNumber: data.contactNumber,
-          studentNumber: data.studentNumber,
-        }
-      ]
-    });
-  };
-
-  const handleAddOfficers = (data: MembersType): void => {
-    setAccreditationData({
-      ...accreditationData,
-      officers: [
-        ...accreditationData.officers,
         {
           email: data.email,
           name: data.name,
@@ -108,11 +91,11 @@ function AccreditationForm() {
     setAccreditationData({ ...accreditationData, members: filteredData });
   };
   
-  const handleDeleteOff = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
-    e.preventDefault();
-    const filteredData = accreditationData.officers.filter((_, index) => toDelete !== index);
-    setAccreditationData({ ...accreditationData, officers: filteredData });
-  };
+  // const handleDeleteOff = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
+  //   e.preventDefault();
+  //   const filteredData = accreditationData.officers.filter((_, index) => toDelete !== index);
+  //   setAccreditationData({ ...accreditationData, officers: filteredData });
+  // };
 
   const handleDeleteAct = (e: React.FormEvent<HTMLButtonElement>, toDelete: number) => {
     e.preventDefault();
@@ -141,14 +124,13 @@ function AccreditationForm() {
     if (membersFile) {
       formData.append("membersFile", membersFile);
     }
-    if (officersFile) {
-      formData.append("officersFile", officersFile);
+    if (planFile) {
+      formData.append("planFile", planFile);
     }
     // console.log(officersFile)
     // Append members and plan activities as JSON strings
     formData.append("members", JSON.stringify(accreditationData.members));
     formData.append("planActivities", JSON.stringify(accreditationData.planActivities));
-    formData.append("officers", JSON.stringify(accreditationData.officers));
 
     try {
       setIsLoading(true);
@@ -163,15 +145,14 @@ function AccreditationForm() {
         organizationName: "",
         type: "",
         members: [],
-        officers: [],
         planActivities: [],
         letter: "",
         appendices: "",
         membersFile: "",
-        officersFile: "",
+        planFile: ""
       })
       setIsLoading(false);
-      successToast('Success')
+      successToast('Accreditation submitted successfully!')
     } catch (error) {
       if (isAxiosError(error)) {
         errorToast(`${error.response?.data.message}`);
@@ -184,9 +165,14 @@ function AccreditationForm() {
   const [fileName, setFileName] = useState<String>("No file Selected")
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [officersFile, setOfficersFile] = useState<File | null>(null)
+  const [planFile, setPlanFile] = useState<File | null>(null)
   const [fileName1, setFileName1] = useState<String>("No file Selected")
   const inputRef1 = useRef<HTMLInputElement>(null)
+
+  // const [constitutionsAndByLaws, setConstitution] = useState<File | null>(null)
+  // const [fileName2, setFileName2] = useState<String>("No file Selected")
+  // const inputRef2 = useRef<HTMLInputElement>(null)
+
   
   const handleUploadClick = () => {
     inputRef.current?.click()
@@ -195,6 +181,10 @@ function AccreditationForm() {
   const handleUploadClick1 = () => {
     inputRef1.current?.click()
   }
+
+  // const handleUploadClick2 = () => {
+  //   inputRef1.current?.click()
+  // }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
@@ -207,16 +197,27 @@ function AccreditationForm() {
     }
   }
 
-  const handleInputOfficer = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputPlan = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
-      setOfficersFile(selectedFile)
+      setPlanFile(selectedFile)
       setFileName1(selectedFile.name)
     } else {
-      setOfficersFile(null)
+      setPlanFile(null)
       setFileName1("No Selected File")
     }
   }
+
+  // const handleInputConsti = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const selectedFile = e.target.files?.[0]
+  //   if (selectedFile) {
+  //     setConstitution(selectedFile)
+  //     setFileName2(selectedFile.name)
+  //   } else {
+  //     setConstitution(null)
+  //     setFileName2("No Selected File")
+  //   }
+  // }
 
   return (
     <section>
@@ -234,7 +235,7 @@ function AccreditationForm() {
           <button
             onClick={handleSubmit}
             className="bg-primary text-white w-36 py-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!membersFile || !accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices || isLoading}
+            disabled={!accreditationData.constitutionsAndByLaws || !accreditationData.organizationName || !accreditationData.type || accreditationData.planActivities.length <= 0 || !accreditationData.letter || !accreditationData.appendices || isLoading}
           >
             {
               isLoading ?
@@ -256,7 +257,20 @@ function AccreditationForm() {
               className="p-[0.22rem]"
               onChange={(e) => handleFileChange(e, 'constitutionsAndByLaws')}
             />
+            {/* <div>
+              <button type="button" className="bg-primary text-white m-0 px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick2}>File Upload</button>
+              <span>{fileName2}</span>
+              <input
+                onChange={handleInputConsti}
+                ref={inputRef2}
+                name="consti-law"
+                type="file"
+                accept="application/pdf"
+                className="sr-only"
+              />
+            </div> */}
           </div>
+          
           <div className="flex flex-col gap-2">
             <label htmlFor="oraganizationName" className="font-bold">
               Organization Name
@@ -326,7 +340,7 @@ function AccreditationForm() {
             <AddMembers
               handleAddMember={handleAddMember}
             />
-            <button type="button" className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick}>CSV Uploads</button>
+            <button type="button" className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick}>CSV Upload</button>
             <span>{fileName}</span>
             <input
               onChange={handleInputChange}
@@ -340,63 +354,8 @@ function AccreditationForm() {
         </div>
 
         <div>
-          <p className="font-bold">3. Officers, Permanent Contact Numbers & Student Number</p>
-          <Table className="mb-2">
-            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-            <TableHeader>
-              <TableRow>
-                <TableHead>Email</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Position</TableHead>
-                <TableHead>Contact Number</TableHead>
-                <TableHead className="text-right">Student Number</TableHead>
-                {/* <TableHead className="text-right">Action</TableHead> */}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {accreditationData.officers.map((member, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{member.email}</TableCell>
-                  <TableCell className="font-medium">{member.name}</TableCell>
-                  <TableCell>{member.position}</TableCell>
-                  <TableCell>{member.contactNumber}</TableCell>
-                  <TableCell className="text-right">{member.studentNumber}</TableCell>
-                  <TableCell className="text-right">
-                    <EditMember
-                      index={index}
-                      accreditationData={accreditationData}
-                      setAccreditationData={setAccreditationData}
-                      isOfficer
-                    />
-                    <button onClick={(e) => { handleDeleteOff(e, index) }} className="text-2xl text-primary">
-                      <FaTrash />
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <div className="flex gap-3 items-center">
-            <AddMembers
-              handleAddMember={handleAddOfficers}
-              isOfficer
-            />
-            <button type="button" className="bg-primary text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick1}>CSV Uploads</button>
-            <span>{fileName1}</span>
-            <input
-              onChange={handleInputOfficer}
-              ref={inputRef1}
-              name="Upload CSV"
-              type="file"
-              accept=".csv"
-              className="sr-only"
-            />
-          </div>
-        </div>
-        <div>
           <p className="font-bold">4. Plan Activities</p>
           <Table className="mb-2">
-            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
               <TableRow>
                 <TableHead>Activity</TableHead>
@@ -432,6 +391,16 @@ function AccreditationForm() {
           <AddActivity
             handleActivity={handleActivity}
           />
+          <button type="button" className="bg-primary m-3 text-white px-5 py-2 rounded-sm drop-shadow-md" onClick={handleUploadClick1}>CSV Upload</button>
+            <span>{fileName1}</span>
+            <input
+              onChange={handleInputPlan}
+              ref={inputRef1}
+              name="Upload CSV"
+              type="file"
+              accept=".csv"
+              className="sr-only"
+            />
         </div>
 
         <div className="flex flex-col gap-2">
